@@ -130,12 +130,8 @@ export default function Dashboard() {
       )}
 
       <p className="mt-10 text-center text-xs text-foreground/40">
-        Built for{" "}
-        <Link href="/" className="underline underline-offset-2">
-          The Ken Case Competition 2026
-        </Link>
-        . Every figure here is computed deterministically from your inputs and a synthetic peer dataset, nothing
-        is fabricated by a language model.
+        Every figure here is computed deterministically from your inputs and a synthetic peer dataset, nothing is
+        fabricated by a language model.
       </p>
     </main>
   );

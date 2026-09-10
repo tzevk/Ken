@@ -1,52 +1,98 @@
 import Link from "next/link";
+import {
+  BellRing,
+  CreditCard,
+  Lightbulb,
+  LineChart,
+  Link2,
+  Mic,
+  Target,
+  Truck,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react";
 import { DATASET_SIZE } from "@/lib/finance/dataset";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/motion";
+import HeroIllustration from "@/components/marketing/HeroIllustration";
 
-const RAILS = [
+const RAILS: { name: string; role: string; icon: LucideIcon; copy: string }[] = [
   {
     name: "Payments",
     role: "Innovation rail",
+    icon: CreditCard,
     copy:
       "Real-time transaction behaviour lets the agent analyse spending and intervene with contextual feedback exactly at the decision moment, not in a monthly statement review.",
   },
   {
     name: "Logistics",
     role: "Annexation rail",
+    icon: Truck,
     copy:
       "Tracks high-value assets from purchase through use to resale, rental, repair or disposal, connecting users to marketplace and service partners when an asset stops earning its keep.",
   },
   {
     name: "Voice",
     role: "Interface rail",
+    icon: Mic,
     copy:
       "Sensitive or complex financial situations get discussed naturally, without forcing a person into a rigid form or dashboard to get personalised guidance.",
   },
 ];
 
-const STEPS = [
-  { n: 1, title: "Understand the person", copy: "Income, expenses, and, unlike most apps, the mindset and life plans behind the numbers." },
-  { n: 2, title: "Load real financial data", copy: "Link accounts or upload manually; the agent reconciles what you said against what actually happened." },
-  { n: 3, title: "Suggest realistic futures", copy: "Multiple goal options sized to actual surplus, not aspiration, so you plan against your data, not a guess." },
-  { n: 4, title: "Surface insights", copy: "What your money is actually doing, benchmarked against people who resemble your life stage." },
-  { n: 5, title: "Project & benchmark", copy: "Month-by-month net worth trajectory with milestones, checked against peers in the dataset." },
-  { n: 6, title: "Live feedback", copy: "Nudges at the moment of a transaction, grounded in your real budget, not generic rules." },
+const STEPS: { n: number; title: string; icon: LucideIcon; copy: string }[] = [
+  {
+    n: 1,
+    title: "Understand the person",
+    icon: UserRound,
+    copy: "Income, expenses, and, unlike most apps, the mindset and life plans behind the numbers.",
+  },
+  {
+    n: 2,
+    title: "Load real financial data",
+    icon: Link2,
+    copy: "Link accounts or upload manually; the agent reconciles what you said against what actually happened.",
+  },
+  {
+    n: 3,
+    title: "Suggest realistic futures",
+    icon: Target,
+    copy: "Multiple goal options sized to actual surplus, not aspiration, so you plan against your data, not a guess.",
+  },
+  {
+    n: 4,
+    title: "Surface insights",
+    icon: Lightbulb,
+    copy: "What your money is actually doing, benchmarked against people who resemble your life stage.",
+  },
+  {
+    n: 5,
+    title: "Project & benchmark",
+    icon: LineChart,
+    copy: "Month-by-month net worth trajectory with milestones, checked against peers in the dataset.",
+  },
+  {
+    n: 6,
+    title: "Live feedback",
+    icon: BellRing,
+    copy: "Nudges at the moment of a transaction, grounded in your real budget, not generic rules.",
+  },
 ];
 
 export default function LandingPage() {
   return (
     <main className="flex-1">
-      <section className="mx-auto max-w-5xl px-6 pt-20 pb-16 sm:pt-28">
+      <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 pt-20 pb-16 sm:pt-28 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <Stagger>
           <StaggerItem>
             <p className="text-sm font-medium tracking-wide text-accent uppercase">The Ken Case Competition 2026</p>
           </StaggerItem>
           <StaggerItem>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+            <h1 className="mt-4 max-w-xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
               Financial advice should adapt to the life behind the numbers.
             </h1>
           </StaggerItem>
           <StaggerItem>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-foreground/80">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-foreground/80">
               Most financial systems categorise people before serving them. Vantage is an agentic co-pilot that
               starts by understanding the person, their family, aspirations, and mindset, before it ever touches a
               transaction. It&apos;s built for people whose financial lives don&apos;t fit standard categories:
@@ -78,6 +124,25 @@ export default function LandingPage() {
             </p>
           </StaggerItem>
         </Stagger>
+
+        <Reveal delay={0.15} className="mt-4 lg:mt-0">
+          <div className="card overflow-hidden p-5 sm:p-6">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium text-foreground/50">Net worth, five-year view</p>
+              <div className="flex items-center gap-3 text-[11px] text-foreground/50">
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-foreground/35" />
+                  Today
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-amber" />
+                  What if
+                </span>
+              </div>
+            </div>
+            <HeroIllustration className="mt-4 w-full" />
+          </div>
+        </Reveal>
       </section>
 
       <section className="border-y border-border bg-panel/60">
@@ -121,11 +186,14 @@ export default function LandingPage() {
           {STEPS.map((s, i) => (
             <Reveal key={s.n} delay={Math.min(i * 0.06, 0.3)}>
               <div className="card h-full p-6 transition hover:-translate-y-0.5 hover:shadow-md">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-contrast">
-                    {s.n}
-                  </span>
-                  <h3 className="font-semibold">{s.title}</h3>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-contrast">
+                      {s.n}
+                    </span>
+                    <h3 className="font-semibold">{s.title}</h3>
+                  </div>
+                  <s.icon size={18} strokeWidth={1.75} className="shrink-0 text-foreground/25" aria-hidden />
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-foreground/75">{s.copy}</p>
               </div>
@@ -148,7 +216,10 @@ export default function LandingPage() {
             {RAILS.map((r, i) => (
               <Reveal key={r.name} delay={i * 0.08}>
                 <div className="card h-full p-6 transition hover:-translate-y-0.5 hover:shadow-md">
-                  <p className="text-xs font-medium uppercase tracking-wide text-amber">{r.role}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-medium uppercase tracking-wide text-amber">{r.role}</p>
+                    <r.icon size={18} strokeWidth={1.75} className="shrink-0 text-amber/60" aria-hidden />
+                  </div>
                   <h3 className="mt-1 font-semibold">{r.name}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-foreground/75">{r.copy}</p>
                 </div>

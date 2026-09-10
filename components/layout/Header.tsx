@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Settings } from "lucide-react";
 import { useAgentStore, useAgentStoreHydrated } from "@/lib/store/agentStore";
 import CustomizePanel from "@/components/layout/CustomizePanel";
+import { Logo } from "@/components/ui/Logo";
 
 export default function Header() {
   const pathname = usePathname();
@@ -17,11 +18,8 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
-          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent text-xs font-bold text-accent-contrast">
-              V
-            </span>
-            Vantage
+          <Link href="/" aria-label="Vantage, home">
+            <Logo iconSize={16} />
           </Link>
 
           <nav className="flex items-center gap-2">
