@@ -19,7 +19,7 @@ export default function Header() {
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
           <Link href="/" aria-label="Vantage, home">
-            <Logo iconSize={16} />
+            <Logo className="text-base" />
           </Link>
 
           <nav className="flex items-center gap-2">

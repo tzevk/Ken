@@ -1,42 +1,17 @@
 /**
- * The Vantage mark: two strokes meeting at a low point, the right arm
- * finishing higher than the left arm starts. It reads as a "V" and as an
- * ascending line at the same time, the same idea as the net worth chart
- * the product is built around. Drawn on a 32x32 grid, stroke=currentColor
- * so it inherits the accent/contrast tokens wherever it's placed.
+ * Wordmark-first, on purpose: a rounded-square badge with a thin abstract
+ * arrow/checkmark inside is the single most overused "generated fintech
+ * logo" pattern there is. Vantage instead just sets its own name with
+ * confident tracking and a small square full-stop, the way Wise, Monzo and
+ * most serious consumer-finance brands actually do it. The favicon-only
+ * mark (public app icon, browser tab) is a separate, bolder geometric V,
+ * not this wordmark shrunk down.
  */
-export function LogoMark({ className, size = 20 }: { className?: string; size?: number }) {
+export function Logo({ className }: { className?: string }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 32 32"
-      fill="none"
-      className={className}
-      aria-hidden
-    >
-      <path
-        d="M7 9L16 23L25 7"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="25" cy="7" r="2.1" fill="currentColor" />
-    </svg>
-  );
-}
-
-export function Logo({ className, iconSize = 20, wordmark = true }: { className?: string; iconSize?: number; wordmark?: boolean }) {
-  return (
-    <span className={`inline-flex items-center gap-2 ${className ?? ""}`}>
-      <span
-        className="flex shrink-0 items-center justify-center rounded-lg bg-accent text-accent-contrast"
-        style={{ width: iconSize + 12, height: iconSize + 12 }}
-      >
-        <LogoMark size={iconSize} />
-      </span>
-      {wordmark && <span className="font-semibold tracking-tight">Vantage</span>}
+    <span className={`inline-flex items-baseline font-semibold tracking-tight text-foreground ${className ?? ""}`}>
+      Vantage
+      <span className="ml-[3px] inline-block h-[0.22em] w-[0.22em] shrink-0 translate-y-[-0.62em] bg-amber" aria-hidden />
     </span>
   );
 }
