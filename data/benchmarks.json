@@ -1,0 +1,272 @@
+{
+  "generated_from": "synthetic (Kaggle 'Indian Personal Finance and Spending Habits' schema)",
+  "n_total": 4000,
+  "buckets": {
+    "100k_200k|Tier_1": {
+      "n": 540,
+      "savings_rate_p25": 17.8,
+      "savings_rate_median": 25.7,
+      "savings_rate_p75": 33.3,
+      "category_median_share": {
+        "Rent": 24.69,
+        "Loan_Repayment": 3.66,
+        "Insurance": 3.18,
+        "Groceries": 10.93,
+        "Transport": 5.94,
+        "Eating_Out": 5.84,
+        "Entertainment": 3.07,
+        "Utilities": 4.43,
+        "Healthcare": 3.74,
+        "Education": 1.23,
+        "Miscellaneous": 4.1
+      }
+    },
+    "60k_100k|Tier_2": {
+      "n": 485,
+      "savings_rate_p25": 23.4,
+      "savings_rate_median": 30.7,
+      "savings_rate_p75": 37.0,
+      "category_median_share": {
+        "Rent": 21.25,
+        "Loan_Repayment": 2.25,
+        "Insurance": 3.1,
+        "Groceries": 10.91,
+        "Transport": 5.97,
+        "Eating_Out": 5.74,
+        "Entertainment": 2.92,
+        "Utilities": 4.48,
+        "Healthcare": 3.69,
+        "Education": 1.23,
+        "Miscellaneous": 4.07
+      }
+    },
+    "60k_100k|Tier_3": {
+      "n": 222,
+      "savings_rate_p25": 21.6,
+      "savings_rate_median": 30.1,
+      "savings_rate_p75": 37.3,
+      "category_median_share": {
+        "Rent": 20.95,
+        "Loan_Repayment": 3.58,
+        "Insurance": 3.04,
+        "Groceries": 10.77,
+        "Transport": 6.25,
+        "Eating_Out": 5.36,
+        "Entertainment": 2.91,
+        "Utilities": 4.15,
+        "Healthcare": 3.7,
+        "Education": 1.32,
+        "Miscellaneous": 3.95
+      }
+    },
+    "under_30k|Tier_1": {
+      "n": 307,
+      "savings_rate_p25": 23.0,
+      "savings_rate_median": 31.4,
+      "savings_rate_p75": 37.3,
+      "category_median_share": {
+        "Rent": 24.5,
+        "Loan_Repayment": 0.0,
+        "Insurance": 3.21,
+        "Groceries": 10.4,
+        "Transport": 6.15,
+        "Eating_Out": 5.68,
+        "Entertainment": 2.96,
+        "Utilities": 4.32,
+        "Healthcare": 3.7,
+        "Education": 1.11,
+        "Miscellaneous": 4.07
+      }
+    },
+    "60k_100k|Tier_1": {
+      "n": 479,
+      "savings_rate_p25": 18.5,
+      "savings_rate_median": 28.2,
+      "savings_rate_p75": 36.2,
+      "category_median_share": {
+        "Rent": 23.4,
+        "Loan_Repayment": 0.6,
+        "Insurance": 2.99,
+        "Groceries": 10.7,
+        "Transport": 5.98,
+        "Eating_Out": 5.68,
+        "Entertainment": 2.84,
+        "Utilities": 4.49,
+        "Healthcare": 3.91,
+        "Education": 1.16,
+        "Miscellaneous": 3.98
+      }
+    },
+    "30k_60k|Tier_3": {
+      "n": 312,
+      "savings_rate_p25": 24.5,
+      "savings_rate_median": 31.3,
+      "savings_rate_p75": 37.0,
+      "category_median_share": {
+        "Rent": 19.83,
+        "Loan_Repayment": 2.09,
+        "Insurance": 2.88,
+        "Groceries": 11.06,
+        "Transport": 5.83,
+        "Eating_Out": 5.85,
+        "Entertainment": 3.1,
+        "Utilities": 4.51,
+        "Healthcare": 4.06,
+        "Education": 1.14,
+        "Miscellaneous": 3.94
+      }
+    },
+    "100k_200k|Tier_2": {
+      "n": 253,
+      "savings_rate_p25": 21.3,
+      "savings_rate_median": 29.7,
+      "savings_rate_p75": 37.3,
+      "category_median_share": {
+        "Rent": 21.65,
+        "Loan_Repayment": 3.13,
+        "Insurance": 2.75,
+        "Groceries": 10.55,
+        "Transport": 5.94,
+        "Eating_Out": 6.07,
+        "Entertainment": 2.79,
+        "Utilities": 4.47,
+        "Healthcare": 3.93,
+        "Education": 1.13,
+        "Miscellaneous": 4.13
+      }
+    },
+    "100k_200k|Tier_3": {
+      "n": 56,
+      "savings_rate_p25": 23.9,
+      "savings_rate_median": 30.8,
+      "savings_rate_p75": 38.8,
+      "category_median_share": {
+        "Rent": 21.14,
+        "Loan_Repayment": 0.0,
+        "Insurance": 3.04,
+        "Groceries": 10.82,
+        "Transport": 5.49,
+        "Eating_Out": 6.57,
+        "Entertainment": 3.31,
+        "Utilities": 3.88,
+        "Healthcare": 3.33,
+        "Education": 1.12,
+        "Miscellaneous": 3.86
+      }
+    },
+    "under_30k|Tier_3": {
+      "n": 274,
+      "savings_rate_p25": 25.1,
+      "savings_rate_median": 33.0,
+      "savings_rate_p75": 39.7,
+      "category_median_share": {
+        "Rent": 20.89,
+        "Loan_Repayment": 0.0,
+        "Insurance": 2.89,
+        "Groceries": 10.89,
+        "Transport": 6.03,
+        "Eating_Out": 5.48,
+        "Entertainment": 3.01,
+        "Utilities": 4.19,
+        "Healthcare": 3.85,
+        "Education": 1.02,
+        "Miscellaneous": 4.15
+      }
+    },
+    "under_30k|Tier_2": {
+      "n": 335,
+      "savings_rate_p25": 24.7,
+      "savings_rate_median": 33.3,
+      "savings_rate_p75": 40.8,
+      "category_median_share": {
+        "Rent": 20.9,
+        "Loan_Repayment": 0.0,
+        "Insurance": 2.92,
+        "Groceries": 10.95,
+        "Transport": 6.15,
+        "Eating_Out": 5.7,
+        "Entertainment": 2.93,
+        "Utilities": 4.18,
+        "Healthcare": 3.69,
+        "Education": 0.89,
+        "Miscellaneous": 4.17
+      }
+    },
+    "30k_60k|Tier_2": {
+      "n": 362,
+      "savings_rate_p25": 20.9,
+      "savings_rate_median": 29.0,
+      "savings_rate_p75": 34.8,
+      "category_median_share": {
+        "Rent": 20.86,
+        "Loan_Repayment": 4.92,
+        "Insurance": 3.13,
+        "Groceries": 10.72,
+        "Transport": 5.98,
+        "Eating_Out": 5.76,
+        "Entertainment": 3.04,
+        "Utilities": 4.3,
+        "Healthcare": 3.86,
+        "Education": 1.27,
+        "Miscellaneous": 3.83
+      }
+    },
+    "30k_60k|Tier_1": {
+      "n": 293,
+      "savings_rate_p25": 19.6,
+      "savings_rate_median": 27.8,
+      "savings_rate_p75": 34.4,
+      "category_median_share": {
+        "Rent": 24.73,
+        "Loan_Repayment": 1.91,
+        "Insurance": 3.0,
+        "Groceries": 11.32,
+        "Transport": 5.97,
+        "Eating_Out": 5.26,
+        "Entertainment": 2.85,
+        "Utilities": 4.4,
+        "Healthcare": 3.86,
+        "Education": 1.19,
+        "Miscellaneous": 3.8
+      }
+    },
+    "200k_plus|Tier_2": {
+      "n": 14,
+      "savings_rate_p25": 25.9,
+      "savings_rate_median": 31.8,
+      "savings_rate_p75": 38.5,
+      "category_median_share": {
+        "Rent": 19.29,
+        "Loan_Repayment": 0.0,
+        "Insurance": 2.03,
+        "Groceries": 11.11,
+        "Transport": 8.01,
+        "Eating_Out": 8.13,
+        "Entertainment": 3.58,
+        "Utilities": 4.38,
+        "Healthcare": 3.14,
+        "Education": 0.62,
+        "Miscellaneous": 3.1
+      }
+    },
+    "200k_plus|Tier_1": {
+      "n": 68,
+      "savings_rate_p25": 21.2,
+      "savings_rate_median": 26.7,
+      "savings_rate_p75": 33.0,
+      "category_median_share": {
+        "Rent": 24.46,
+        "Loan_Repayment": 1.38,
+        "Insurance": 2.86,
+        "Groceries": 11.84,
+        "Transport": 5.37,
+        "Eating_Out": 7.46,
+        "Entertainment": 3.06,
+        "Utilities": 4.56,
+        "Healthcare": 3.99,
+        "Education": 1.12,
+        "Miscellaneous": 3.7
+      }
+    }
+  }
+}
