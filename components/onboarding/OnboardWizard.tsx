@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { PencilLine } from "lucide-react";
 import { EASE } from "@/components/ui/motion";
 import { Field, NumberInput, Select, TextArea, TextInput } from "@/components/ui/fields";
 import { EXPENSE_CATEGORIES } from "@/lib/types/finance";
@@ -168,7 +169,7 @@ function OnboardForm({
     <div className="page-enter mx-auto max-w-2xl px-6 py-16">
       {isEditing && step !== "submitting" && (
         <div className="mb-6 flex items-center gap-2 rounded-lg border border-accent/30 bg-accent-soft px-4 py-2.5 text-sm text-accent">
-          <span aria-hidden>✎</span>
+          <PencilLine size={16} strokeWidth={2} className="shrink-0" aria-hidden />
           Editing your existing profile. Everything below is pre-filled, so just change what&apos;s different.
         </div>
       )}
@@ -190,7 +191,7 @@ function OnboardForm({
             <Field label="Age">
               <NumberInput value={age} onChange={(e) => setAge(Number(e.target.value))} min={16} max={90} />
             </Field>
-            <Field label="Dependents">
+            <Field label="Dependents" hint="People financially reliant on your income: children, a spouse, or parents you support">
               <NumberInput value={dependents} onChange={(e) => setDependents(Number(e.target.value))} min={0} max={10} />
             </Field>
             <Field label="Occupation">

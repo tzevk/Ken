@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { X } from "lucide-react";
 import {
   ACCENT_THEMES,
   DASHBOARD_PANELS,
@@ -46,7 +47,7 @@ export default function CustomizePanel({ open, onClose }: { open: boolean; onClo
             className="rounded-full p-1.5 text-foreground/50 transition hover:bg-accent-soft hover:text-foreground"
             aria-label="Close customize panel"
           >
-            ✕
+            <X size={16} strokeWidth={2} aria-hidden />
           </button>
         </div>
 

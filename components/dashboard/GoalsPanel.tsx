@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { Star } from "lucide-react";
 import type { GoalOption } from "@/lib/types/finance";
 
 const FEASIBILITY_STYLE: Record<GoalOption["feasibility"], string> = {
@@ -57,14 +58,14 @@ export default function GoalsPanel({
                       whileTap={{ scale: 0.8 }}
                       animate={pinned ? { scale: [1, 1.35, 1] } : { scale: 1 }}
                       transition={{ duration: 0.35 }}
-                      className={`shrink-0 rounded-full p-1 text-sm transition-colors ${
+                      className={`shrink-0 rounded-full p-1 transition-colors ${
                         pinned ? "text-accent" : "text-foreground/30 hover:text-foreground/60"
                       }`}
                       aria-label={pinned ? `Unpin ${g.title}` : `Pin ${g.title}`}
                       aria-pressed={pinned}
                       title={pinned ? "Pinned, click to unpin" : "Pin this goal"}
                     >
-                      {pinned ? "★" : "☆"}
+                      <Star size={16} strokeWidth={2} fill={pinned ? "currentColor" : "none"} aria-hidden />
                     </motion.button>
                   </div>
                   <h3 className="mt-2 text-sm font-semibold">{g.title}</h3>

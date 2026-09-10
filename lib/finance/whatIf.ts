@@ -1,8 +1,10 @@
 import type { UserProfile } from "@/lib/types/finance";
 
+export type LifeScenarioIcon = "raise" | "baby" | "move" | "freelance" | "shock" | "trim";
+
 export interface LifeScenario {
   id: string;
-  emoji: string;
+  icon: LifeScenarioIcon;
   label: string;
   blurb: string;
   apply: (p: UserProfile) => UserProfile;
@@ -17,7 +19,7 @@ export interface LifeScenario {
 export const LIFE_SCENARIOS: LifeScenario[] = [
   {
     id: "raise",
-    emoji: "\u{1F4C8}",
+    icon: "raise",
     label: "I get a 20% raise",
     blurb: "A meaningful promotion or job switch bumps your take-home pay.",
     apply: (p) => ({
@@ -27,7 +29,7 @@ export const LIFE_SCENARIOS: LifeScenario[] = [
   },
   {
     id: "baby",
-    emoji: "\u{1F476}",
+    icon: "baby",
     label: "We have a baby",
     blurb: "One more dependent, plus the recurring costs that come with it.",
     apply: (p) => ({
@@ -42,7 +44,7 @@ export const LIFE_SCENARIOS: LifeScenario[] = [
   },
   {
     id: "move",
-    emoji: "\u{1F3D9}",
+    icon: "move",
     label: "I move to a bigger city",
     blurb: "Higher pay, but rent and everyday costs climb too.",
     apply: (p) => ({
@@ -57,7 +59,7 @@ export const LIFE_SCENARIOS: LifeScenario[] = [
   },
   {
     id: "freelance",
-    emoji: "\u{1F4BB}",
+    icon: "freelance",
     label: "I go freelance",
     blurb: "More freedom, less predictable income while you build a client base.",
     apply: (p) => ({
@@ -68,7 +70,7 @@ export const LIFE_SCENARIOS: LifeScenario[] = [
   },
   {
     id: "shock",
-    emoji: "⚡",
+    icon: "shock",
     label: "An unexpected expense hits",
     blurb: "A medical bill, a repair, a family emergency. Three months of expenses, gone at once.",
     apply: (p) => ({
@@ -81,7 +83,7 @@ export const LIFE_SCENARIOS: LifeScenario[] = [
   },
   {
     id: "trim",
-    emoji: "✂️",
+    icon: "trim",
     label: "I cut discretionary spending 20%",
     blurb: "Eating out, subscriptions, the small stuff, trimmed on purpose.",
     apply: (p) => ({

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Area, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Baby, Building2, Laptop, Scissors, TrendingUp, Zap, type LucideIcon } from "lucide-react";
 import type { UserProfile } from "@/lib/types/finance";
 import {
   computeMilestones,
@@ -10,8 +11,17 @@ import {
   monthlySurplus,
   projectNetWorth,
 } from "@/lib/finance/calculators";
-import { LIFE_SCENARIOS, applyIncomeShift } from "@/lib/finance/whatIf";
+import { LIFE_SCENARIOS, applyIncomeShift, type LifeScenarioIcon } from "@/lib/finance/whatIf";
 import AnimatedNumber from "@/components/ui/AnimatedNumber";
+
+const SCENARIO_ICONS: Record<LifeScenarioIcon, LucideIcon> = {
+  raise: TrendingUp,
+  baby: Baby,
+  move: Building2,
+  freelance: Laptop,
+  shock: Zap,
+  trim: Scissors,
+};
 
 function inrShort(n: number) {
   const sign = n < 0 ? "-" : "";
@@ -81,22 +91,25 @@ export default function WhatIfSimulator({ profile }: { profile: UserProfile }) {
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
-        {LIFE_SCENARIOS.map((s) => (
-          <motion.button
-            key={s.id}
-            whileTap={{ scale: 0.94 }}
-            onClick={() => setScenarioId(scenarioId === s.id ? null : s.id)}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-              scenarioId === s.id
-                ? "border-accent bg-accent text-accent-contrast"
-                : "border-border bg-panel-muted text-foreground/70 hover:bg-accent-soft"
-            }`}
-            title={s.blurb}
-          >
-            <span className="mr-1">{s.emoji}</span>
-            {s.label}
-          </motion.button>
-        ))}
+        {LIFE_SCENARIOS.map((s) => {
+          const Icon = SCENARIO_ICONS[s.icon];
+          return (
+            <motion.button
+              key={s.id}
+              whileTap={{ scale: 0.94 }}
+              onClick={() => setScenarioId(scenarioId === s.id ? null : s.id)}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                scenarioId === s.id
+                  ? "border-accent bg-accent text-accent-contrast"
+                  : "border-border bg-panel-muted text-foreground/70 hover:bg-accent-soft"
+              }`}
+              title={s.blurb}
+            >
+              <Icon size={14} strokeWidth={2} aria-hidden />
+              {s.label}
+            </motion.button>
+          );
+        })}
       </div>
 
       <div className="mt-5">
