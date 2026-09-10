@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { EASE } from "@/components/ui/motion";
 import { Field, NumberInput, Select, TextArea, TextInput } from "@/components/ui/fields";
 import { EXPENSE_CATEGORIES } from "@/lib/types/finance";
 import type {
@@ -16,6 +18,12 @@ import type {
 import { useAgentStore, useAgentStoreHydrated } from "@/lib/store/agentStore";
 
 type WizardStep = "basics" | "income" | "expenses" | "aspirations" | "data" | "submitting";
+
+const slideVariants = {
+  enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 28 : -28 }),
+  center: { opacity: 1, x: 0 },
+  exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -28 : 28 }),
+};
 
 const defaultIncome: IncomeProfile = {
   familyIncome: 0,
@@ -81,7 +89,17 @@ function OnboardForm({
   const isEditing = !!initialProfile;
 
   const [step, setStep] = useState<WizardStep>("basics");
+  const [direction, setDirection] = useState(1);
   const [error, setError] = useState<string | null>(null);
+
+  function goNext(next: WizardStep) {
+    setDirection(1);
+    setStep(next);
+  }
+  function goBack(prev: WizardStep) {
+    setDirection(-1);
+    setStep(prev);
+  }
 
   const [name, setName] = useState(initialProfile?.name ?? "");
   const [age, setAge] = useState(initialProfile?.age ?? 28);
@@ -151,16 +169,18 @@ function OnboardForm({
       {isEditing && step !== "submitting" && (
         <div className="mb-6 flex items-center gap-2 rounded-lg border border-accent/30 bg-accent-soft px-4 py-2.5 text-sm text-accent">
           <span aria-hidden>✎</span>
-          Editing your existing profile — everything below is pre-filled, change only what&apos;s different.
+          Editing your existing profile. Everything below is pre-filled, so just change what&apos;s different.
         </div>
       )}
       <WizardProgress step={step} />
 
+      <AnimatePresence mode="wait" custom={direction} initial={false}>
       {step === "basics" && (
+        <motion.div key="basics" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.28, ease: EASE }}>
         <StepCard
           title="Let's start with the basics"
-          subtitle="Step 1, Part 1 of 3 — who is this for?"
-          onNext={() => setStep("income")}
+          subtitle="Step 1, part 1 of 3. Who is this for?"
+          onNext={() => goNext("income")}
           nextLabel="Continue to income"
         >
           <div className="grid gap-4 sm:grid-cols-2">
@@ -191,14 +211,16 @@ function OnboardForm({
             </Field>
           </div>
         </StepCard>
+        </motion.div>
       )}
 
       {step === "income" && (
+        <motion.div key="income" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.28, ease: EASE }}>
         <StepCard
           title="Income"
-          subtitle="Step 1, Part 1 — family income, savings, inheritance, personal income & investments"
-          onBack={() => setStep("basics")}
-          onNext={() => setStep("expenses")}
+          subtitle="Step 1, part 1: family income, savings, inheritance, personal income and investments"
+          onBack={() => goBack("basics")}
+          onNext={() => goNext("expenses")}
           nextLabel="Continue to expenses"
         >
           <div className="grid gap-4 sm:grid-cols-2">
@@ -234,14 +256,16 @@ function OnboardForm({
             </Field>
           </div>
         </StepCard>
+        </motion.div>
       )}
 
       {step === "expenses" && (
+        <motion.div key="expenses" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.28, ease: EASE }}>
         <StepCard
           title="Expenses"
-          subtitle="Step 1, Part 2 — family expenses, insurance, loans, recurring costs"
-          onBack={() => setStep("income")}
-          onNext={() => setStep("aspirations")}
+          subtitle="Step 1, part 2: family expenses, insurance, loans, recurring costs"
+          onBack={() => goBack("income")}
+          onNext={() => goNext("aspirations")}
           nextLabel="Continue to your plans"
         >
           <div className="grid gap-4 sm:grid-cols-2">
@@ -271,18 +295,20 @@ function OnboardForm({
             </Field>
           </div>
         </StepCard>
+        </motion.div>
       )}
 
       {step === "aspirations" && (
+        <motion.div key="aspirations" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.28, ease: EASE }}>
         <StepCard
-          title="Instead of another number — tell us about your life"
-          subtitle="Step 1, Part 3 — this is what most finance apps skip, and what changes the advice"
-          onBack={() => setStep("expenses")}
-          onNext={() => setStep("data")}
+          title="Instead of another number, tell us about your life"
+          subtitle="Step 1, part 3. Most finance apps skip this, and it changes the advice"
+          onBack={() => goBack("expenses")}
+          onNext={() => goNext("data")}
           nextLabel="Continue to connect data"
         >
           <div className="grid gap-4">
-            <Field label="What's on your mind about the future?" hint="Free text — a home, a business, a career change, anything">
+            <Field label="What's on your mind about the future?" hint="Free text: a home, a business, a career change, anything">
               <TextArea
                 value={aspirations.futurePlansNote}
                 onChange={(e) => setAspirations({ ...aspirations, futurePlansNote: e.target.value })}
@@ -344,20 +370,22 @@ function OnboardForm({
             </Field>
           </div>
         </StepCard>
+        </motion.div>
       )}
 
       {step === "data" && (
+        <motion.div key="data" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.28, ease: EASE }}>
         <StepCard
           title="Connect your financial data"
-          subtitle="Step 2 — this lets the agent check what you told us against what actually happened"
-          onBack={() => setStep("aspirations")}
+          subtitle="Step 2, this lets the agent check what you told us against what actually happened"
+          onBack={() => goBack("aspirations")}
           onNext={handleSubmit}
           nextLabel={isEditing ? "Update my profile" : "Run the agent"}
         >
           <div className="space-y-3">
             {(
               [
-                { id: "linked", label: "Link bank & card accounts", desc: "Simulated for this demo via peer-matched transaction patterns from our dataset — no real credentials needed." },
+                { id: "linked", label: "Link bank & card accounts", desc: "Simulated for this demo via peer-matched transaction patterns from our dataset. No real credentials needed." },
                 { id: "manual", label: "I'll enter my expenses manually", desc: "Enter a rough monthly split by category below." },
                 { id: "skipped", label: "Not comfortable sharing data yet", desc: "We'll work from what you told us above, nothing more." },
               ] as const
@@ -401,16 +429,29 @@ function OnboardForm({
 
           {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
         </StepCard>
+        </motion.div>
       )}
 
       {step === "submitting" && (
-        <div className="card flex flex-col items-center gap-3 p-12 text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-          <p className="text-sm text-foreground/70">
-            Loading your data, projecting goals, and benchmarking against peers…
-          </p>
-        </div>
+        <motion.div key="submitting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+          <div className="card flex flex-col items-center gap-4 p-12 text-center">
+            <motion.div className="flex items-center gap-1.5">
+              {[0, 1, 2].map((i) => (
+                <motion.span
+                  key={i}
+                  className="h-2.5 w-2.5 rounded-full bg-accent"
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }}
+                />
+              ))}
+            </motion.div>
+            <p className="text-sm text-foreground/70">
+              Loading your data, projecting goals, and benchmarking against peers…
+            </p>
+          </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

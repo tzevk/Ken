@@ -15,6 +15,7 @@ export type ColorMode = "system" | "light" | "dark";
 
 export const DASHBOARD_PANELS = [
   { id: "goals", label: "Goals" },
+  { id: "whatIf", label: "What if? simulator" },
   { id: "projection", label: "Net worth projection" },
   { id: "insights", label: "Insights" },
   { id: "benchmark", label: "Peer benchmark" },

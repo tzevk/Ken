@@ -122,8 +122,8 @@ export function simulateLinkedTransactions(profile: UserProfile): LinkedDataResu
         Math.abs(deltaPercent) < 8
           ? "What you told us roughly matches what your accounts show. Good self-awareness."
           : deltaPercent > 0
-            ? "Your accounts show meaningfully more spending than you estimated — a common blind spot, not a judgment."
-            : "Your accounts show less spending than you estimated — you may be over-budgeting out of caution.",
+            ? "Your accounts show meaningfully more spending than you estimated. A common blind spot, not a judgment."
+            : "Your accounts show less spending than you estimated. You may be over-budgeting out of caution.",
     },
   };
 }

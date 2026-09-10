@@ -18,7 +18,7 @@ function getClient(): Anthropic | null {
   return client;
 }
 
-const SYSTEM_PROMPT = `You are the narration layer of a personal-finance agent built around one thesis: financial advice should adapt to the life behind the numbers, not just the numbers. You never invent figures — you are always given the exact computed numbers and must weave them into 2-4 sentences of warm, direct, non-patronizing prose for the user. No bullet points, no headers, no emoji. Reference the person's actual stated life stage/aspirations when relevant instead of generic advice. Keep it tight.`;
+const SYSTEM_PROMPT = `You are the narration layer of a personal-finance agent built around one thesis: financial advice should adapt to the life behind the numbers, not just the numbers. You never invent figures; you're always given the exact computed numbers and must weave them into 2-4 sentences of warm, direct, non-patronizing prose for the user. Write the way a sharp friend would talk, not a report. Use periods and commas, not em dashes. No bullet points, no headers, no emoji. Reference the person's actual stated life stage or aspirations when relevant instead of generic advice. Keep it tight.`;
 
 async function callClaude(userPrompt: string): Promise<string | null> {
   const c = getClient();
@@ -63,15 +63,15 @@ function templateFor(step: 2 | 3 | 4 | 5, profile: UserProfile, payload: StepPay
     case 2: {
       const { linkedData } = payload as { linkedData: LinkedDataResult };
       if (linkedData.mode === "skipped") {
-        return "No problem — we'll work from what you told us. You can connect data anytime and we'll sharpen everything against it.";
+        return "No problem, we'll work from what you told us. You can connect data anytime and we'll sharpen everything against it.";
       }
       const { statedMonthlyExpenses, observedMonthlyExpenses, note } = linkedData.reconciliation;
-      return `${linkedData.mode === "linked" ? "Linked your accounts" : "Logged your manual entries"} — ₹${observedMonthlyExpenses.toLocaleString("en-IN")}/month in spend vs. the ₹${statedMonthlyExpenses.toLocaleString("en-IN")} you estimated. ${note}`;
+      return `${linkedData.mode === "linked" ? "Linked your accounts" : "Logged your manual entries"}: ₹${observedMonthlyExpenses.toLocaleString("en-IN")}/month in spend vs. the ₹${statedMonthlyExpenses.toLocaleString("en-IN")} you estimated. ${note}`;
     }
     case 3: {
       const { goals } = payload as { goals: GoalOption[] };
       const top = goals[0];
-      return `Based on your actual surplus rather than a wishlist, I've laid out ${goals.length} realistic paths forward — starting with ${top?.title.toLowerCase()}, reachable in about ${top ? Math.round(top.horizonMonths / 12) : "?"} years at ₹${top?.monthlyCommitment.toLocaleString("en-IN")}/month. Pick what fits; these aren't ranked by ambition, they're ranked by what your numbers can actually support.`;
+      return `Based on your actual surplus rather than a wishlist, I've laid out ${goals.length} realistic paths forward, starting with ${top?.title.toLowerCase()}, reachable in about ${top ? Math.round(top.horizonMonths / 12) : "?"} years at ₹${top?.monthlyCommitment.toLocaleString("en-IN")}/month. Pick what fits. These aren't ranked by ambition, they're ranked by what your numbers can actually support.`;
     }
     case 4: {
       const { insights } = payload as { insights: Insight[] };
@@ -92,7 +92,7 @@ function templateFor(step: 2 | 3 | 4 | 5, profile: UserProfile, payload: StepPay
       const peerLine = benchmark
         ? ` That puts you ahead of roughly ${benchmark.percentileEstimate}% of people with a similar income and city tier.`
         : "";
-      return `If your current surplus holds, ${firstMilestone?.label.toLowerCase() ?? "your first milestone"} is ${horizonPhrase}.${peerLine} These are projections, not promises — they update every time your numbers do.`;
+      return `If your current surplus holds, ${firstMilestone?.label.toLowerCase() ?? "your first milestone"} is ${horizonPhrase}.${peerLine} These are projections, not promises. They update every time your numbers do.`;
     }
   }
 }

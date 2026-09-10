@@ -10,7 +10,7 @@ export default function BenchmarkPanel({ benchmark }: { benchmark: BenchmarkResu
       <div className="card p-6">
         <h2 className="font-semibold">Peer benchmark</h2>
         <p className="mt-2 text-sm text-foreground/60">
-          Not enough data to place you against peers yet — this needs your income and city tier.
+          Not enough data to place you against peers yet. This needs your income and city tier.
         </p>
       </div>
     );

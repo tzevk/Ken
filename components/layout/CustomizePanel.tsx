@@ -53,7 +53,7 @@ export default function CustomizePanel({ open, onClose }: { open: boolean; onClo
         <div className="space-y-8 p-5">
           <section>
             <p className="text-xs font-medium uppercase tracking-wide text-foreground/45">Accent</p>
-            <p className="mt-1 text-xs text-foreground/55">The brand palette stays constant — only the accent hue changes.</p>
+            <p className="mt-1 text-xs text-foreground/55">The brand palette stays constant. Only the accent hue changes.</p>
             <div className="mt-3 flex gap-3">
               {ACCENT_THEMES.map((t) => (
                 <button

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Field, NumberInput, Select, TextInput } from "@/components/ui/fields";
 import { EXPENSE_CATEGORIES } from "@/lib/types/finance";
 import type { AgentState, BudgetAlert, ExpenseCategory, Transaction } from "@/lib/types/finance";
@@ -46,10 +47,10 @@ export default function TransactionSimulator({ state }: { state: AgentState }) {
     <div className="card p-6">
       <div className="flex items-baseline justify-between">
         <h2 className="font-semibold">Simulate a transaction</h2>
-        <span className="text-xs text-foreground/50">Step 6 — live feedback while you spend</span>
+        <span className="text-xs text-foreground/50">Step 6, live feedback while you spend</span>
       </div>
       <p className="mt-1 text-xs text-foreground/55">
-        Log a purchase the way it would arrive from a linked card, and see the agent react in real time against
+        Log a purchase the way it would arrive from a linked card and see the agent react in real time against
         your budget.
       </p>
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -69,37 +70,63 @@ export default function TransactionSimulator({ state }: { state: AgentState }) {
           <NumberInput value={amount} onChange={(e) => setAmount(Number(e.target.value))} min={1} />
         </Field>
       </div>
-      <button
+      <motion.button
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.96 }}
         onClick={handleSpend}
         disabled={loading}
         className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-contrast transition hover:opacity-90 disabled:opacity-50"
       >
         {loading ? "Checking…" : "Make this transaction"}
-      </button>
+      </motion.button>
 
-      {lastAlert && lastAlert !== "none" && (
-        <div className={`mt-4 rounded-lg border p-3 text-sm ${TONE_STYLE[lastAlert.tone]}`}>
-          <p className="font-medium">{lastAlert.message}</p>
-          {lastAlert.suggestedAction && <p className="mt-1 text-xs opacity-80">{lastAlert.suggestedAction}</p>}
-        </div>
-      )}
-      {lastAlert === "none" && (
-        <div className="mt-4 rounded-lg border border-border bg-background/60 p-3 text-sm text-foreground/60">
-          Logged — nothing worth flagging here. The agent stays quiet unless it&apos;s useful.
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {lastAlert && lastAlert !== "none" && (
+          <motion.div
+            key="alert"
+            initial={{ opacity: 0, y: -8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className={`mt-4 rounded-lg border p-3 text-sm ${TONE_STYLE[lastAlert.tone]}`}
+          >
+            <p className="font-medium">{lastAlert.message}</p>
+            {lastAlert.suggestedAction && <p className="mt-1 text-xs opacity-80">{lastAlert.suggestedAction}</p>}
+          </motion.div>
+        )}
+        {lastAlert === "none" && (
+          <motion.div
+            key="none"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 rounded-lg border border-border bg-background/60 p-3 text-sm text-foreground/60"
+          >
+            Logged. Nothing worth flagging here, the agent stays quiet unless it&apos;s useful.
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="mt-6">
         <p className="text-xs font-medium uppercase tracking-wide text-foreground/45">Recent activity</p>
         <ul className="mt-2 space-y-1.5">
-          {state.transactions.slice(0, 6).map((t) => (
-            <li key={t.id} className="flex items-center justify-between text-xs">
-              <span className="text-foreground/70">
-                {t.merchant} · {t.category.replace("_", " ")}
-              </span>
-              <span className="font-medium">₹{t.amount.toLocaleString("en-IN")}</span>
-            </li>
-          ))}
+          <AnimatePresence initial={false}>
+            {state.transactions.slice(0, 6).map((t) => (
+              <motion.li
+                key={t.id}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.25 }}
+                className="flex items-center justify-between text-xs"
+              >
+                <span className="text-foreground/70">
+                  {t.merchant} · {t.category.replace("_", " ")}
+                </span>
+                <span className="font-medium">₹{t.amount.toLocaleString("en-IN")}</span>
+              </motion.li>
+            ))}
+          </AnimatePresence>
           {state.transactions.length === 0 && <li className="text-xs text-foreground/40">No transactions yet.</li>}
         </ul>
       </div>

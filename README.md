@@ -20,6 +20,18 @@ npm run dev
 Open `http://localhost:3000`, click **Talk to the agent**, complete the intake, and land on the dashboard.
 No API keys or bank credentials are required — the app runs fully deterministically out of the box.
 
+## The standout feature: "What if?"
+
+Every finance app shows you where you are. None show you where a decision actually takes you. The
+**What if? simulator** (front and center on the dashboard, teased on the landing page) lets a user tap a
+scenario chip, "I have a baby," "I go freelance," "I move to a bigger city," "an unexpected expense hits,"
+or drag an income slider, and instantly see their five-year net worth path redraw itself on top of where
+they're headed today. No form submission, no page reload: it recomputes client-side against the exact same
+pure calculators that power the rest of the dashboard (`lib/finance/whatIf.ts`,
+`components/dashboard/WhatIfSimulator.tsx`), so the comparison is instant and the numbers are exactly as
+trustworthy as everything else in the app. This is the product's answer to the case's own customer insight:
+people don't lack data, they lack a way to rehearse a life decision before making it.
+
 ## Product experience
 
 - **Installable web app** — a manifest, generated icons and theme-color metadata make it installable to a

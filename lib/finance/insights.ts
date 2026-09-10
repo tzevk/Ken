@@ -20,7 +20,7 @@ export function buildInsights(
     detail:
       surplus >= 0
         ? `That's a ${rate.toFixed(1)}% savings rate on ~₹${Math.round(totalMonthlyIncome(profile)).toLocaleString("en-IN")} of monthly income.`
-        : "Expenses are currently outpacing income. This isn't a moral failure — it's the first thing to fix before any goal-setting.",
+        : "Expenses are currently outpacing income. This isn't a moral failure, it's the first thing to fix before any goal-setting.",
     severity: surplus >= 0 ? "positive" : "alert",
     metric: { label: "Savings rate", value: `${rate.toFixed(1)}%` },
   });
@@ -41,7 +41,7 @@ export function buildInsights(
       insights.push({
         id: "reconciliation-match",
         headline: "Your self-estimate closely matches your actual spending",
-        detail: "That's a strong signal of financial self-awareness — most people we've spoken to are off by 15-30%.",
+        detail: "That's a strong signal of financial self-awareness. Most people we've spoken to are off by 15-30%.",
         severity: "positive",
       });
     }
@@ -51,7 +51,7 @@ export function buildInsights(
     insights.push({
       id: "peer-position",
       headline: `You save more than roughly ${benchmark.percentileEstimate}% of similar earners`,
-      detail: `Among ${benchmark.peerCount.toLocaleString("en-IN")} peers with a similar income and location profile, the median savings rate is ${benchmark.peerSavingsRateMedian}% — you're at ${benchmark.userSavingsRate}%.`,
+      detail: `Among ${benchmark.peerCount.toLocaleString("en-IN")} peers with a similar income and location profile, the median savings rate is ${benchmark.peerSavingsRateMedian}%. You're at ${benchmark.userSavingsRate}%.`,
       severity: benchmark.percentileEstimate >= 50 ? "positive" : "watch",
     });
 
@@ -83,7 +83,7 @@ export function buildInsights(
     insights.push({
       id: "insurance-gap",
       headline: "No insurance premium in your expense picture, despite dependents",
-      detail: "With dependents relying on your income, even a basic term + health cover materially changes downside risk — independent of how much you save.",
+      detail: "With dependents relying on your income, even a basic term and health cover materially changes downside risk, independent of how much you save.",
       severity: "alert",
     });
   }

@@ -11,7 +11,7 @@ function getClient(): Anthropic | null {
   return client;
 }
 
-const SYSTEM_PROMPT = `You are an agentic personal-finance co-pilot. Your product philosophy: financial advice should adapt to the life behind the numbers, not just the numbers, and your job is to make the user financially smarter and more independent — never dependent on you. You have tools to look up the user's real financial snapshot, budgets, goals, insights, peer benchmarks, and projections. ALWAYS call a relevant tool before answering a question with numbers in it — never guess or invent a figure. Answer in 2-5 sentences, direct and warm, no headers or bullet lists unless truly listing multiple options. If the user asks something no tool can answer (e.g. "should I get married for tax benefits"), say plainly that this is a decision the agent should never make for them.`;
+const SYSTEM_PROMPT = `You are an agentic personal-finance co-pilot. Your product philosophy: financial advice should adapt to the life behind the numbers, not just the numbers, and your job is to make the user financially smarter and more independent, never dependent on you. You have tools to look up the user's real financial snapshot, budgets, goals, insights, peer benchmarks, and projections. Always call a relevant tool before answering a question with numbers in it, never guess or invent a figure. Answer in 2-5 sentences, direct and warm, using periods and commas rather than em dashes, no headers or bullet lists unless truly listing multiple options. If the user asks something no tool can answer (e.g. "should I get married for tax benefits"), say plainly that this is a decision the agent should never make for them.`;
 
 export interface AgentChatTurn {
   reply: string;
@@ -52,7 +52,7 @@ export async function runAgentChat(userMessage: string, state: AgentState): Prom
     if (toolUseBlocks.length === 0) {
       const textBlock = resp.content.find((b) => b.type === "text");
       return {
-        reply: textBlock && textBlock.type === "text" ? textBlock.text.trim() : "I wasn't able to form a response — try rephrasing.",
+        reply: textBlock && textBlock.type === "text" ? textBlock.text.trim() : "I wasn't able to form a response. Try rephrasing?",
         toolCalls,
         usedLLM: true,
       };
@@ -72,7 +72,7 @@ export async function runAgentChat(userMessage: string, state: AgentState): Prom
     messages.push({ role: "user", content: toolResults });
   }
 
-  return { reply: "I looked into this from a few angles but couldn't settle on a clean answer — could you narrow the question?", toolCalls, usedLLM: true };
+  return { reply: "I looked into this from a few angles but couldn't settle on a clean answer. Could you narrow the question?", toolCalls, usedLLM: true };
 }
 
 /** Deterministic fallback: simple keyword routing to the same tool functions, templated output. */
@@ -92,7 +92,7 @@ function deterministicChat(userMessage: string, state: AgentState): AgentChatTur
     return {
       reply: top
         ? `Your top suggested goal is "${top.title}" at ₹${top.monthlyCommitment.toLocaleString("en-IN")}/month, reachable in about ${Math.round(top.horizonMonths / 12)} years. There are ${goals.length} options total on your dashboard, sized to what your surplus can actually support.`
-        : "I don't have enough profile data yet to suggest goals — complete the intake first.",
+        : "I don't have enough profile data yet to suggest goals. Complete the intake first.",
       toolCalls,
       usedLLM: false,
     };
@@ -110,7 +110,7 @@ function deterministicChat(userMessage: string, state: AgentState): AgentChatTur
     return {
       reply: bench?.percentileEstimate
         ? `You're saving more than roughly ${bench.percentileEstimate}% of ${bench.peerCount} peers with a similar income and city tier.`
-        : "I don't have a peer benchmark yet — this needs your income and city tier from onboarding.",
+        : "I don't have a peer benchmark yet. This needs your income and city tier from onboarding.",
       toolCalls,
       usedLLM: false,
     };
@@ -120,7 +120,7 @@ function deterministicChat(userMessage: string, state: AgentState): AgentChatTur
     const last = projection[projection.length - 1];
     return {
       reply: last
-        ? `At your current surplus, projected net worth in 24 months is roughly ₹${last.netWorth.toLocaleString("en-IN")}. This assumes no major life changes — revisit it whenever your income or goals shift.`
+        ? `At your current surplus, projected net worth in 24 months is roughly ₹${last.netWorth.toLocaleString("en-IN")}. This assumes no major life changes, so revisit it whenever your income or goals shift.`
         : "I need your profile first to project anything.",
       toolCalls,
       usedLLM: false,
@@ -130,7 +130,7 @@ function deterministicChat(userMessage: string, state: AgentState): AgentChatTur
   call("get_financial_snapshot");
   return {
     reply:
-      "I can answer questions about your budget, goals, peer comparisons, and future projections — try asking something like \"how am I doing on eating out this month?\" or \"when can I afford a house down payment?\"",
+      "I can answer questions about your budget, goals, peer comparisons, and future projections. Try asking something like \"how am I doing on eating out this month?\" or \"when can I afford a house down payment?\"",
     toolCalls,
     usedLLM: false,
   };

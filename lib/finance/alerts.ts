@@ -45,7 +45,7 @@ export function evaluateTransaction(
       transactionId: newTxn.id,
       category,
       tone: "nudge",
-      message: `Heads up — ${category.replace("_", " ")} is at ${Math.round(utilization * 100)}% of its typical monthly budget after this ₹${newTxn.amount.toLocaleString("en-IN")} transaction.`,
+      message: `Heads up, ${category.replace("_", " ")} is at ${Math.round(utilization * 100)}% of its typical monthly budget after this ₹${newTxn.amount.toLocaleString("en-IN")} transaction.`,
     };
   }
   if (utilization <= 0.5 && ["Eating_Out", "Entertainment", "Miscellaneous"].includes(category) && spentSoFar > 0) {
@@ -54,7 +54,7 @@ export function evaluateTransaction(
       transactionId: newTxn.id,
       category,
       tone: "praise",
-      message: `Nice — ${category.replace("_", " ")} is still well within budget this month. Room to redirect some of this toward your goals if you want.`,
+      message: `Nice, ${category.replace("_", " ")} is still well within budget this month. Room to redirect some of this toward your goals if you want.`,
     };
   }
   return null;
