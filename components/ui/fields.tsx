@@ -13,7 +13,7 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 }
 
 const inputClass =
-  "w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft";
+  "w-full rounded-lg border border-border bg-panel-muted px-3 py-2 text-sm text-foreground outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft";
 
 export function NumberInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input type="number" className={inputClass} {...props} />;

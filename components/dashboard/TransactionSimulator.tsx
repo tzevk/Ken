@@ -7,9 +7,9 @@ import type { AgentState, BudgetAlert, ExpenseCategory, Transaction } from "@/li
 import { useAgentStore } from "@/lib/store/agentStore";
 
 const TONE_STYLE: Record<BudgetAlert["tone"], string> = {
-  warning: "border-red-300 bg-red-50 text-red-800",
-  nudge: "border-amber-300 bg-amber-50 text-amber-800",
-  praise: "border-emerald-300 bg-emerald-50 text-emerald-800",
+  warning: "border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-300",
+  nudge: "border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300",
+  praise: "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
 };
 
 export default function TransactionSimulator({ state }: { state: AgentState }) {
@@ -72,7 +72,7 @@ export default function TransactionSimulator({ state }: { state: AgentState }) {
       <button
         onClick={handleSpend}
         disabled={loading}
-        className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
+        className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-contrast transition hover:opacity-90 disabled:opacity-50"
       >
         {loading ? "Checking…" : "Make this transaction"}
       </button>

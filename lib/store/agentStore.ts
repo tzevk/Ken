@@ -9,6 +9,7 @@ interface AgentStore {
   state: AgentState | null;
   setState: (s: AgentState) => void;
   addTransaction: (t: Transaction, alert: BudgetAlert | null) => void;
+  toggleGoalSelection: (goalId: string) => void;
   reset: () => void;
 }
 
@@ -41,6 +42,14 @@ export const useAgentStore = create<AgentStore>()(
             alerts: alert ? [alert, ...current.alerts] : current.alerts,
           },
         });
+      },
+      toggleGoalSelection: (goalId) => {
+        const current = get().state;
+        if (!current) return;
+        const selected = current.selectedGoalIds.includes(goalId)
+          ? current.selectedGoalIds.filter((id) => id !== goalId)
+          : [...current.selectedGoalIds, goalId];
+        set({ state: { ...current, selectedGoalIds: selected } });
       },
       reset: () => set({ state: null }),
     }),

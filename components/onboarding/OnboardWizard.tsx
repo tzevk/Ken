@@ -13,7 +13,7 @@ import type {
   Occupation,
   UserProfile,
 } from "@/lib/types/finance";
-import { useAgentStore } from "@/lib/store/agentStore";
+import { useAgentStore, useAgentStoreHydrated } from "@/lib/store/agentStore";
 
 type WizardStep = "basics" | "income" | "expenses" | "aspirations" | "data" | "submitting";
 
@@ -41,25 +41,62 @@ const defaultAspirations: AspirationProfile = {
   otherAspirations: "",
 };
 
+/**
+ * Waits for the persisted store to hydrate before mounting the actual form.
+ * Editing an existing profile then becomes a one-time lazy `useState`
+ * initializer keyed off props — no effect-driven setState needed, so the
+ * form can never flash empty defaults before snapping to the real values.
+ */
 export default function OnboardWizard() {
+  const existingProfile = useAgentStore((s) => s.state?.profile ?? null);
+  const existingDataMode = useAgentStore((s) => s.state?.linkedData?.mode ?? null);
+  const hydrated = useAgentStoreHydrated();
+
+  if (!hydrated) {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-16">
+        <div className="card h-64 animate-pulse" />
+      </div>
+    );
+  }
+
+  return (
+    <OnboardForm
+      key={existingProfile ? existingProfile.createdAt : "new"}
+      initialProfile={existingProfile}
+      initialDataMode={existingDataMode}
+    />
+  );
+}
+
+function OnboardForm({
+  initialProfile,
+  initialDataMode,
+}: {
+  initialProfile: UserProfile | null;
+  initialDataMode: DataSourceMode | null;
+}) {
   const router = useRouter();
   const setAgentState = useAgentStore((s) => s.setState);
+  const isEditing = !!initialProfile;
 
   const [step, setStep] = useState<WizardStep>("basics");
   const [error, setError] = useState<string | null>(null);
 
-  const [name, setName] = useState("");
-  const [age, setAge] = useState(28);
-  const [dependents, setDependents] = useState(0);
-  const [occupation, setOccupation] = useState<Occupation>("Salaried");
-  const [cityTier, setCityTier] = useState<CityTier>("Tier_1");
+  const [name, setName] = useState(initialProfile?.name ?? "");
+  const [age, setAge] = useState(initialProfile?.age ?? 28);
+  const [dependents, setDependents] = useState(initialProfile?.dependents ?? 0);
+  const [occupation, setOccupation] = useState<Occupation>(initialProfile?.occupation ?? "Salaried");
+  const [cityTier, setCityTier] = useState<CityTier>(initialProfile?.cityTier ?? "Tier_1");
 
-  const [income, setIncome] = useState<IncomeProfile>(defaultIncome);
-  const [expenses, setExpenses] = useState<ExpenseProfile>(defaultExpenses);
-  const [aspirations, setAspirations] = useState<AspirationProfile>(defaultAspirations);
+  const [income, setIncome] = useState<IncomeProfile>(initialProfile?.income ?? defaultIncome);
+  const [expenses, setExpenses] = useState<ExpenseProfile>(initialProfile?.expenses ?? defaultExpenses);
+  const [aspirations, setAspirations] = useState<AspirationProfile>(initialProfile?.aspirations ?? defaultAspirations);
 
-  const [dataMode, setDataMode] = useState<DataSourceMode>("linked");
-  const [manualCategories, setManualCategories] = useState<Record<string, number>>({});
+  const [dataMode, setDataMode] = useState<DataSourceMode>(initialDataMode ?? "linked");
+  const [manualCategories, setManualCategories] = useState<Record<string, number>>(
+    (initialProfile?.expenses.categoryBreakdown as Record<string, number> | undefined) ?? {},
+  );
 
   async function handleSubmit() {
     setStep("submitting");
@@ -110,7 +147,13 @@ export default function OnboardWizard() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-16">
+    <div className="page-enter mx-auto max-w-2xl px-6 py-16">
+      {isEditing && step !== "submitting" && (
+        <div className="mb-6 flex items-center gap-2 rounded-lg border border-accent/30 bg-accent-soft px-4 py-2.5 text-sm text-accent">
+          <span aria-hidden>✎</span>
+          Editing your existing profile — everything below is pre-filled, change only what&apos;s different.
+        </div>
+      )}
       <WizardProgress step={step} />
 
       {step === "basics" && (
@@ -309,7 +352,7 @@ export default function OnboardWizard() {
           subtitle="Step 2 — this lets the agent check what you told us against what actually happened"
           onBack={() => setStep("aspirations")}
           onNext={handleSubmit}
-          nextLabel="Run the agent"
+          nextLabel={isEditing ? "Update my profile" : "Run the agent"}
         >
           <div className="space-y-3">
             {(
@@ -322,7 +365,7 @@ export default function OnboardWizard() {
               <label
                 key={opt.id}
                 className={`block cursor-pointer rounded-xl border p-4 transition ${
-                  dataMode === opt.id ? "border-accent bg-accent-soft" : "border-border bg-white"
+                  dataMode === opt.id ? "border-accent bg-accent-soft" : "border-border bg-panel-muted"
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -415,7 +458,7 @@ function StepCard({
         )}
         <button
           onClick={onNext}
-          className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+          className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-accent-contrast transition hover:opacity-90"
         >
           {nextLabel}
         </button>

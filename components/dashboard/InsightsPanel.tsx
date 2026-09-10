@@ -3,10 +3,10 @@
 import type { Insight } from "@/lib/types/finance";
 
 const SEVERITY_STYLE: Record<Insight["severity"], string> = {
-  positive: "border-l-emerald-500",
-  info: "border-l-slate-300",
-  watch: "border-l-amber-500",
-  alert: "border-l-red-500",
+  positive: "border-l-emerald-500 dark:border-l-emerald-400",
+  info: "border-l-slate-300 dark:border-l-slate-600",
+  watch: "border-l-amber-500 dark:border-l-amber-400",
+  alert: "border-l-red-500 dark:border-l-red-400",
 };
 
 export default function InsightsPanel({ insights }: { insights: Insight[] }) {

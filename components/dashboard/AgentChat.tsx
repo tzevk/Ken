@@ -56,7 +56,7 @@ export default function AgentChat({ state }: { state: AgentState }) {
           <div key={i} className={`flex ${e.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
               className={`max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
-                e.role === "user" ? "bg-accent text-white" : "bg-background/70 text-foreground/85"
+                e.role === "user" ? "bg-accent text-accent-contrast" : "bg-background/70 text-foreground/85"
               }`}
             >
               {e.text}
@@ -94,12 +94,12 @@ export default function AgentChat({ state }: { state: AgentState }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a question…"
-          className="flex-1 rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent-soft"
+          className="flex-1 rounded-lg border border-border bg-panel-muted px-3 py-2 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-accent-soft"
         />
         <button
           type="submit"
           disabled={loading}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-contrast transition hover:opacity-90 disabled:opacity-50"
         >
           Send
         </button>

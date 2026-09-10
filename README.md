@@ -20,6 +20,22 @@ npm run dev
 Open `http://localhost:3000`, click **Talk to the agent**, complete the intake, and land on the dashboard.
 No API keys or bank credentials are required — the app runs fully deterministically out of the box.
 
+## Product experience
+
+- **Installable web app** — a manifest, generated icons and theme-color metadata make it installable to a
+  phone home screen or desktop (`public/manifest.webmanifest`, `app/icon.svg`).
+- **Customizable, on-brand:** a Customize panel (gear icon, top right) lets each user pick a light/dark/
+  system appearance and one of four accent hues (forest/midnight/plum/clay) — the layout, typography and
+  paper-like background stay constant, only the accent identity color changes, and the choice persists
+  across visits (`lib/store/preferencesStore.ts`, `app/globals.css`).
+- **Dashboard panels are opt-in/out** from the same panel, so a user can hide what they don't care about
+  (e.g. drop the chat or the peer benchmark) without losing any data.
+- **Editable, not disposable:** "Edit profile" re-opens the intake wizard pre-filled with the existing
+  profile instead of forcing a full re-onboarding for a one-field change; "Start over" (confirmed) is kept
+  separate and clearly secondary.
+- **Goal pinning:** star a suggested goal to keep it pinned to the top of the list — a lightweight way to
+  say "this is the one I'm actually tracking."
+
 ## The six-step agent flow
 
 Maps directly to the founder notes this project was scoped from:

@@ -1,36 +1,144 @@
 @import "tailwindcss";
 
+/* Drives `dark:` utilities off our data-theme attribute (set by ThemeScript/
+   ThemeSync) instead of Tailwind's default prefers-color-scheme strategy,
+   so the in-app light/dark toggle actually controls them. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---- Base tokens (light, default "forest" accent) ---- */
 :root {
   --background: #f7f5ef;
   --foreground: #12231d;
   --panel: #ffffff;
+  --panel-muted: #f1efe6;
   --border: #e3ddc9;
   --accent: #14532d;
+  --accent-contrast: #ffffff;
   --accent-soft: #dff0e3;
   --amber: #b45309;
+  --shadow-color: 30 30% 10%;
+}
+
+/* ---- Accent variants (light) ---- */
+:root[data-accent="midnight"] {
+  --accent: #1e3a6b;
+  --accent-soft: #dfe7f5;
+  --amber: #b4530c;
+}
+:root[data-accent="plum"] {
+  --accent: #6b1d3e;
+  --accent-soft: #f3dfe7;
+  --amber: #b4530c;
+}
+:root[data-accent="clay"] {
+  --accent: #9a3412;
+  --accent-soft: #f6e3d8;
+  --amber: #6b1d3e;
+}
+
+/* ---- Dark mode base ---- */
+:root[data-theme="dark"] {
+  --background: #0f1512;
+  --foreground: #eae6d9;
+  --panel: #161d19;
+  --panel-muted: #1c2420;
+  --border: #2a332d;
+  --accent-contrast: #ffffff;
+}
+:root[data-theme="dark"][data-accent="forest"] {
+  --accent: #4ade80;
+  --accent-soft: #16301f;
+  --amber: #f0a24a;
+  --accent-contrast: #0f1512;
+}
+:root[data-theme="dark"][data-accent="midnight"] {
+  --accent: #7ea6ff;
+  --accent-soft: #17233f;
+  --amber: #f0a24a;
+  --accent-contrast: #0f1512;
+}
+:root[data-theme="dark"][data-accent="plum"] {
+  --accent: #ef8ab0;
+  --accent-soft: #351826;
+  --amber: #f0a24a;
+  --accent-contrast: #0f1512;
+}
+:root[data-theme="dark"][data-accent="clay"] {
+  --accent: #f2925f;
+  --accent-soft: #3a2013;
+  --amber: #ef8ab0;
+  --accent-contrast: #0f1512;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-panel: var(--panel);
+  --color-panel-muted: var(--panel-muted);
   --color-border: var(--border);
   --color-accent: var(--accent);
+  --color-accent-contrast: var(--accent-contrast);
   --color-accent-soft: var(--accent-soft);
   --color-amber: var(--amber);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+* {
+  border-color: var(--border);
+}
+
+html {
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 1rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
+/* Page-level fade/slide-in, applied per route via the .page-enter class */
+.page-enter {
+  animation: page-enter 0.35s ease both;
+}
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+
+/* Scrollbar theming, best-effort */
+* {
+  scrollbar-color: var(--border) transparent;
+}

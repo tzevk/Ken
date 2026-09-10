@@ -49,7 +49,7 @@ export default function LandingPage() {
         <div className="mt-10 flex flex-wrap gap-4">
           <Link
             href="/onboard"
-            className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+            className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-contrast transition hover:opacity-90"
           >
             Talk to the agent
           </Link>
@@ -84,7 +84,7 @@ export default function LandingPage() {
           {STEPS.map((s) => (
             <div key={s.n} className="card p-6">
               <div className="flex items-center gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-contrast">
                   {s.n}
                 </span>
                 <h3 className="font-semibold">{s.title}</h3>
@@ -123,7 +123,7 @@ export default function LandingPage() {
         </p>
         <Link
           href="/onboard"
-          className="mt-8 inline-block rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+          className="mt-8 inline-block rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-contrast transition hover:opacity-90"
         >
           Start the six-step flow
         </Link>
