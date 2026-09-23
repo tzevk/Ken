@@ -9,9 +9,14 @@ export default function Footer() {
         <p className="text-xs text-foreground/50">
           Built for The Ken Case Competition 2026. Financial advice should adapt to the life behind the numbers.
         </p>
-        <Link href="/onboard" className="text-xs font-medium text-accent hover:underline">
-          Talk to the agent
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/submission" className="text-xs font-medium text-accent hover:underline">
+            Design documentation
+          </Link>
+          <Link href="/onboard" className="text-xs font-medium text-accent hover:underline">
+            Talk to the agent
+          </Link>
+        </div>
       </div>
     </footer>
   );
