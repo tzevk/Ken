@@ -1,0 +1,520 @@
+<title>Vantage State Machine</title>
+<style>
+  :root{
+    --bg:#f2f4f4; --panel:#ffffff; --panel-2:#f8f9f9;
+    --ink:#12181f; --ink-soft:#4b5766; --border:#dde2e4;
+    --accent:#0f6e6a; --accent-soft:#e3f2f0; --accent-ink:#0a4b48;
+    --mono-bg:#eef2f1; --code-ink:#0a3a37;
+    --success:#1a7f4e; --success-soft:#e5f4ea;
+    --caution:#a8590a; --caution-soft:#fbecdb;
+    --human:#1d4ed8; --human-soft:#e6ecfd;
+    --danger:#b91c1c; --danger-soft:#fbe7e7;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0e1417; --panel:#151c20; --panel-2:#111719;
+      --ink:#e7edee; --ink-soft:#a9b6bb; --border:#2a3438;
+      --accent:#39c2ba; --accent-soft:#123330; --accent-ink:#8fe4dd;
+      --mono-bg:#101b1a; --code-ink:#7fe0d7;
+      --success:#4fbf82; --success-soft:#0f2a1d;
+      --caution:#e0983f; --caution-soft:#2f2110;
+      --human:#7fa2ff; --human-soft:#151f36;
+      --danger:#f28080; --danger-soft:#301414;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1417; --panel:#151c20; --panel-2:#111719;
+    --ink:#e7edee; --ink-soft:#a9b6bb; --border:#2a3438;
+    --accent:#39c2ba; --accent-soft:#123330; --accent-ink:#8fe4dd;
+    --mono-bg:#101b1a; --code-ink:#7fe0d7;
+    --success:#4fbf82; --success-soft:#0f2a1d;
+    --caution:#e0983f; --caution-soft:#2f2110;
+    --human:#7fa2ff; --human-soft:#151f36;
+    --danger:#f28080; --danger-soft:#301414;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:16px; line-height:1.62;
+  }
+  h1,h2,h3{ font-family:"Fraunces", Georgia, serif; font-weight:600; text-wrap:balance; color:var(--ink); }
+  code, .mono, td.mono, th.mono { font-family:"IBM Plex Mono", ui-monospace, monospace; }
+
+  .shell{ display:flex; max-width:1180px; margin:0 auto; align-items:flex-start; }
+  nav.toc{
+    position: sticky; top: calc(env(safe-area-inset-top,0px) + 18px);
+    width:230px; flex:0 0 230px; padding:28px 14px 40px 20px;
+    max-height: calc(100vh - 40px); overflow-y:auto;
+  }
+  nav.toc .eyebrow{ font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:10px; }
+  nav.toc a{ display:block; font-size:13.5px; color:var(--ink-soft); text-decoration:none; padding:5px 8px; border-radius:7px; }
+  nav.toc a:hover{ background:var(--accent-soft); color:var(--accent-ink); }
+  nav.toc .h{ font-weight:600; color:var(--ink); margin-top:14px; }
+
+  main{ flex:1; min-width:0; padding:40px clamp(16px,4vw,56px) 100px; }
+  .title-block{ margin-bottom:10px; }
+  .kicker{ font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+  h1.page-title{ font-size:clamp(28px,4vw,40px); margin:0 0 8px; }
+  .subtitle{ color:var(--ink-soft); max-width:60ch; font-size:15.5px; }
+
+  section{ margin-top:52px; padding-top:6px; border-top:1px solid var(--border); }
+  section:first-of-type{ border-top:none; }
+  h2{ font-size:23px; display:flex; align-items:baseline; gap:10px; margin:0 0 6px; }
+  h2 .num{ font-family:"IBM Plex Mono",monospace; font-size:14px; color:var(--accent); font-weight:500; }
+  h3{ font-size:17px; margin:26px 0 8px; }
+  p{ margin:0 0 14px; max-width:74ch; }
+  ul,ol{ max-width:72ch; padding-left:22px; margin:0 0 14px; }
+  li{ margin-bottom:6px; }
+  strong{ color:var(--ink); }
+
+  .callout{
+    background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent);
+    border-radius:10px; padding:14px 18px; margin:16px 0; max-width:74ch;
+  }
+  .callout.danger{ border-left-color:var(--danger); }
+  .callout.human{ border-left-color:var(--human); }
+
+  blockquote{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    padding:22px 26px; margin:18px 0; max-width:76ch;
+  }
+  blockquote p:last-child{ margin-bottom:0; }
+
+  table{ border-collapse:collapse; width:100%; font-size:13.5px; background:var(--panel); }
+  .tablewrap{ overflow-x:auto; border:1px solid var(--border); border-radius:12px; margin:16px 0; }
+  th,td{ text-align:left; padding:9px 12px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th{ background:var(--panel-2); font-family:"IBM Plex Mono",monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  td.mono{ white-space:nowrap; color:var(--code-ink); }
+
+  .badge{ display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:11px; padding:2px 8px; border-radius:999px; font-weight:600; }
+  .b-success{ background:var(--success-soft); color:var(--success); }
+  .b-caution{ background:var(--caution-soft); color:var(--caution); }
+  .b-human{ background:var(--human-soft); color:var(--human); }
+  .b-danger{ background:var(--danger-soft); color:var(--danger); }
+
+  pre.mermaid{ background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:18px; margin:18px 0; overflow-x:auto; }
+  .diagram-caption{ font-size:13px; color:var(--ink-soft); margin-top:-8px; margin-bottom:20px; max-width:70ch; }
+
+  .h-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; margin:16px 0; }
+  .h-card{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px 14px; }
+  .h-card .id{ font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600; }
+  .h-card p{ font-size:13px; margin:4px 0 0; color:var(--ink-soft); }
+
+  .findings-grid{ display:grid; grid-template-columns:1fr; gap:12px; margin:16px 0; max-width:76ch; }
+  .finding{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:14px 18px; }
+  .finding .num{ font-family:"IBM Plex Mono",monospace; color:var(--accent); font-size:12px; }
+
+  .avoid{ background:var(--danger-soft); border:1px solid color-mix(in srgb, var(--danger) 30%, transparent); border-radius:12px; padding:14px 18px; margin-bottom:10px; max-width:74ch; }
+  .avoid .num{ font-family:"IBM Plex Mono",monospace; color:var(--danger); font-size:12px; }
+
+  footer{ margin-top:70px; padding-top:20px; border-top:1px solid var(--border); color:var(--ink-soft); font-size:12.5px; }
+
+  @media (max-width: 860px){
+    .shell{ flex-direction:column; }
+    nav.toc{ position:static; width:100%; max-height:none; padding:20px 16px 0; }
+    nav.toc a{ display:inline-block; margin-right:4px;}
+    main{ padding:24px 16px 80px; }
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<div class="shell">
+  <nav class="toc">
+    <div class="eyebrow">Vantage — Q3</div>
+    <a href="#top">Overview</a>
+    <a href="#h-recap">H1–H9 recap</a>
+    <div class="h">Audit</div>
+    <a href="#p1">1 · Attack the generic model</a>
+    <a href="#p2">2 · What counts as a state</a>
+    <a href="#p3">3 · Two machines</a>
+    <a href="#p4">4 · Happy flow</a>
+    <a href="#p5">5 · Unhappy flow</a>
+    <a href="#p6">6 · Abstain</a>
+    <a href="#p7">7 · Confidence, operational</a>
+    <a href="#p8">8 · Failure taxonomy</a>
+    <a href="#p9">9 · Resumability</a>
+    <a href="#p10">10 · Invariants</a>
+    <a href="#p11">11 · Transition table</a>
+    <a href="#p12">12 · Diagrams</a>
+    <a href="#p13">13 · Scenario traces</a>
+    <a href="#p14">14 · Red-team</a>
+    <a href="#p15">15 · Originality test</a>
+    <div class="h">Answer</div>
+    <a href="#p16">16 · Final response</a>
+    <a href="#ledger">Capability ledger</a>
+    <a href="#log">Decision log</a>
+  </nav>
+
+  <main id="top">
+    <div class="title-block">
+      <div class="kicker">Question 3 — states</div>
+      <h1 class="page-title">Vantage's runtime state machine</h1>
+      <p class="subtitle">A full audit before an answer: the generic model attacked and discarded, a two-machine design tested on its merits, seventeen distinct unhappy paths given seventeen distinct recoveries, then red-teamed and checked for originality before being written up for judges.</p>
+    </div>
+
+    <section id="h-recap">
+      <h2><span class="num">H1–H9</span>Preserved design decisions</h2>
+      <p>Carried forward unchanged from Questions 1 and 2. Everything below is built to hold these, not to reinterpret them.</p>
+      <div class="h-grid">
+        <div class="h-card"><div class="id">H1</div><p>Deterministic financial truth. The LLM never performs authoritative arithmetic.</p></div>
+        <div class="h-card"><div class="id">H2</div><p>Agentic reasoning belongs at the decision moment, not primarily in chat.</p></div>
+        <div class="h-card"><div class="id">H3</div><p>Consequence, not judgment. Vantage says what changes, never good/bad.</p></div>
+        <div class="h-card"><div class="id">H4</div><p>Silence is a valid action. Not maximizing interventions is a legitimate outcome.</p></div>
+        <div class="h-card"><div class="id">H5</div><p>Declining dependency: fewer unnecessary interventions over time, without worse alignment.</p></div>
+        <div class="h-card"><div class="id">H6</div><p>Accountable for understanding a consequence before commitment — not for the user's choice.</p></div>
+        <div class="h-card"><div class="id">H7</div><p>Conservative L3: bounded autonomy over the attention process, not financial authority.</p></div>
+        <div class="h-card"><div class="id">H8</div><p>Execution boundary: money movement, debt, goal changes always need explicit human authority.</p></div>
+        <div class="h-card"><div class="id">H9</div><p>Dynamic autonomy governor: A<sub>t</sub> = f(P, C<sub>t</sub>, R<sub>t</sub>, D<sub>t</sub>). Permission is a ceiling, never an instruction to act.</p></div>
+      </div>
+    </section>
+
+    <section id="p1">
+      <h2><span class="num">Part 1</span>Attacking the generic state machine</h2>
+      <p>The default shape most teams reach for:</p>
+      <div class="callout mono">USER INPUT → FETCH DATA → ANALYZE → RECOMMEND → USER APPROVES → ACTION → SUCCESS / FAILURE</div>
+      <p>Discarded outright, not improved. Six specific reasons it cannot represent Vantage:</p>
+      <ol>
+        <li><strong>No terminal state for correct silence.</strong> Every cycle funnels toward a recommendation — H4 has nowhere to live. "Nothing happened" isn't a state here; it's an absence, which makes it unauditable later.</li>
+        <li><strong>"ANALYZE" collapses the one boundary the product exists to preserve.</strong> H1 separates deterministic arithmetic from agentic judgment. One box hides that line from a financial-risk reviewer entirely.</li>
+        <li><strong>"RECOMMEND → APPROVES → ACTION" is the L2 shape</strong>, not conservative L3 (H7). Most events should never generate a proposal at all.</li>
+        <li><strong>No representation of evidence quality.</strong> ANALYZE assumes data is always sufficient — directly contradicting H9's premise that missing data must never silently produce false confidence.</li>
+        <li><strong>SUCCESS/FAILURE is too coarse for H3/H6.</strong> A user proceeding after ASK can be a success. This shape has no room for that, nor for ABSTAIN as a third outcome.</li>
+        <li><strong>It's linear and single-machine.</strong> It can't express the same lifecycle stage behaving differently under different evidence conditions — the actual content of H9.</li>
+      </ol>
+    </section>
+
+    <section id="p2">
+      <h2><span class="num">Part 2</span>What counts as a state</h2>
+      <p>A state is a condition where entering it changes at least one of: what Vantage is <em>waiting for</em>, what it's <em>permitted</em> to do, what it <em>believes it knows</em>, what <em>human authority</em> is required, what <em>transition</em> can happen next, or what must be <em>recorded</em>.</p>
+      <p><strong>Explicitly not states:</strong> a tool call (implementation detail inside a state), a single deterministic calculation (unless its output changes one of the six), a UI screen (presentation, not runtime condition), a raw API response (only the validated result can trigger a transition), an action (the output of entering a state, not the state itself).</p>
+      <p>This is why "memory updated" — offered as a hypothesis — is not modeled as a visited state below: nothing ever waits there. It's an atomic write performed while transitioning into <code>CLOSED</code>.</p>
+    </section>
+
+    <section id="p3">
+      <h2><span class="num">Part 3</span>Two interconnected machines</h2>
+      <p>Two machines, not one — and not independent. <strong>Machine B gates Machine A's transition guards.</strong></p>
+      <h3>Machine A — Financial Decision Lifecycle</h3>
+      <p>Per-event, ephemeral. <code>OBSERVED → CONTEXT_ASSEMBLED → CONSEQUENCE_COMPUTED → RELEVANCE_ASSESSED → { SILENT | INFORMED | AWAITING_HUMAN_DECISION | ESCALATED | ABSTAINED } → CLOSED</code>, with <code>PENDING_EVIDENCE</code> as a recoverable hold, <code>POST_HOC</code> as the late-arrival branch, and <code>CORRECTED</code> as a post-closure amendment.</p>
+      <p>The prompt's "user decision" and "outcome observed" are merged into <code>AWAITING_HUMAN_DECISION</code>'s resolution — at this design stage, Vantage has no execution power, so the human's response <em>is</em> the outcome; there's no daylight to model separately.</p>
+      <h3>Machine B — Autonomy Governor</h3>
+      <p><strong>Not an independently-persisted, transitioning machine.</strong> A deliberate answer to the prompt's open question: <strong>P</strong> (the standing mandate) is real persisted state, changed only by explicit user action. <strong>C<sub>t</sub>, R<sub>t</sub>, D<sub>t</sub></strong> are computed fresh at each checkpoint from currently-observable facts — there's no history to recover, because they aren't stored, they're recalculated.</p>
+      <p>Machine B's output — what Machine A's guards actually read — is one of four operating envelopes:</p>
+      <div class="tablewrap"><table>
+        <tr><th>Envelope</th><th>Meaning</th></tr>
+        <tr><td class="mono">FULL_ENVELOPE</td><td>Ceiling P fully usable</td></tr>
+        <tr><td class="mono">CONTRACTED_ENVELOPE</td><td>Governor voluntarily restricts below P — forces INFORM over SILENT, or ASK over autonomous handling</td></tr>
+        <tr><td class="mono">ABSTAIN_REQUIRED</td><td>Evidence too poor to exercise any of P safely</td></tr>
+        <tr><td class="mono">MANDATE_EXCEEDED</td><td>The needed action sits outside P entirely, regardless of evidence quality</td></tr>
+      </table></div>
+      <p>This directly implements H9: P alone never causes an action; the governor decides how much of P is currently earned. Concretely:</p>
+      <div class="callout mono" style="white-space:pre-wrap;">CONSEQUENCE_COMPUTED + FULL_ENVELOPE       → autonomous classification proceeds
+CONSEQUENCE_COMPUTED + CONTRACTED_ENVELOPE  → ceiling for this event drops one tier
+CONSEQUENCE_COMPUTED + ABSTAIN_REQUIRED     → routes to ABSTAINED, no classification attempted
+CONSEQUENCE_COMPUTED + MANDATE_EXCEEDED     → routes to a human, regardless of confidence</div>
+    </section>
+
+    <section id="p4">
+      <h2><span class="num">Part 4</span>Happy flow — three legitimate successes</h2>
+      <h3>A · Correct silence</h3>
+      <p><strong>Entry</strong> <code>OBSERVED</code>, deduplicated by transaction id. <strong>Evidence</strong>: budget position, buffer, at-risk goals, intervention history — all complete, fresh, corroborated. <strong>Calculation</strong>: no goal delta crosses the material threshold; buffer floor holds with margin. <strong>Reasoning</strong>: governor = <span class="badge b-success">FULL_ENVELOPE</span>, not material. <strong>Trigger</strong> → <code>SILENT</code>. <strong>Logged</strong>: an Intervention record with the trigger facts and the evidence snapshot — an auditable non-event, not a missed one. <strong>Why no interaction</strong>: H4 — declining to interrupt <em>is</em> the success here. <strong>Later verification</strong>: if a subsequent goal divergence traces back to this transaction unflagged, it's revisited through the correction protocol (Part 5, U12).</p>
+      <h3>B · Useful information, no friction</h3>
+      <p>Same through <code>CONSEQUENCE_COMPUTED</code>; delta is material but not critical. Governor = <span class="badge b-success">FULL_ENVELOPE</span> → autonomous <code>INFORMED</code>. What differs from silence: a consequence statement is generated and shown — a date shift, not a verdict — with nothing to approve. No acknowledgment required, by design (H4's no-friction principle). Closes on delivery, not on being read. Logged with <code>actionTaken: "inform"</code>, no <code>userResponse</code> field — INFORM has none.</p>
+      <h3>C · Human decision at the boundary</h3>
+      <p>Same through <code>CONSEQUENCE_COMPUTED</code>; this time a deterministic protected-floor or committed-obligation guardrail fires <em>independent of the softer classifier</em>. Governor forces <span class="badge b-human">AWAITING_HUMAN_DECISION</span> regardless of how good the evidence otherwise is. Vantage may show the computed consequence and which stated priority is at risk — it may not call the purchase good or bad (H3), and it may not withhold the transaction itself (H8). Options: <em>continue</em> or <em>reconsider</em>. Continue → <code>CLOSED</code>, <code>userResponse: "continued"</code> — <strong>recorded as success if disclosure was accurate and timely</strong>, exactly as H6 requires. This single instance never writes to a standing preference on its own; only an explicit, separate user action does that (U10).</p>
+    </section>
+
+    <section id="p5">
+      <h2><span class="num">Part 5</span>Unhappy flow — seventeen distinct failures</h2>
+      <p>Different failures, different semantics, different recovery. No single generic ERROR state anywhere in this design.</p>
+      <div class="tablewrap"><table>
+        <tr><th>Case</th><th>Distinction</th><th>Transition rule</th></tr>
+        <tr><td class="mono">U1 Missing</td><td>Fact absent, required for this compute</td><td>→ <span class="badge b-caution">ABSTAIN_REQUIRED</span>, resolves per downside (Part 6)</td></tr>
+        <tr><td class="mono">U2 Stale</td><td>Fact exists, past its freshness threshold</td><td>→ <span class="badge b-caution">CONTRACTED_ENVELOPE</span>; SILENT unavailable even if numbers would support it</td></tr>
+        <tr><td class="mono">U3 Conflicting</td><td>Sources disagree beyond tolerance</td><td>Quarantine the field; unaffected calcs proceed; affected ones → <code>PENDING_EVIDENCE</code> or <code>ABSTAINED</code></td></tr>
+        <tr><td class="mono">U4 Rail down</td><td>Capability, not epistemic</td><td>Context/consequence unaffected; only an execution-linked <em>offer</em> inside ASK becomes unavailable</td></tr>
+        <tr><td class="mono">U5 Outside mandate</td><td>Authority, independent of confidence</td><td>→ <span class="badge b-human">MANDATE_EXCEEDED</span> regardless of C<sub>t</sub></td></tr>
+        <tr><td class="mono">U6 High conf. / high stakes</td><td>Confidence ≠ permission</td><td>Protected-boundary hit forces human control even at FULL_ENVELOPE</td></tr>
+        <tr><td class="mono">U7 Low conf. / low stakes</td><td>Bothering the user is itself a cost</td><td>Low D<sub>t</sub> → <strong>silent-logged</strong> abstention, not a clarification request</td></tr>
+        <tr><td class="mono">U8 Ignored INFORM</td><td>Silence ≠ disagreement</td><td>Recorded as <code>no_acknowledgment</code>; never used to infer anything</td></tr>
+        <tr><td class="mono">U9 Proceeds after ASK</td><td>Not automatically a failure</td><td>= Happy Path C, restated as the case to defend</td></tr>
+        <tr><td class="mono">U10 Repeated overrides</td><td>Observed ≠ explicit ≠ inferred preference</td><td>Pattern → a single explicit meta-ASK, never a silent threshold change</td></tr>
+        <tr><td class="mono">U11 Goal changes</td><td>Legitimate trigger, not a failure</td><td>Invalidates cached consequence for open instances only; closed history stays immutable</td></tr>
+        <tr><td class="mono">U12 Prior intervention wrong</td><td>Needs a correction protocol</td><td>New linked <code>CORRECTED</code> record; source's future reliability weight downgraded</td></tr>
+        <tr><td class="mono">U13 Malformed tool output</td><td>Technical ≠ financial uncertainty</td><td>Never becomes a fact; bounded retry, then <code>ABSTAINED</code> with a technical-fault reason</td></tr>
+        <tr><td class="mono">U14 Duplicate event</td><td>Idempotency</td><td>Dedup key checked at entry; no second instance, no second effect</td></tr>
+        <tr><td class="mono">U15 Arrives post-commit</td><td>A fourth failure kind — see Part 8</td><td>→ <code>POST_HOC</code>; <code>deliveredPreCommitment: false</code>, never counted as an H6 success</td></tr>
+        <tr><td class="mono">U16 Permission revoked</td><td>P changes immediately</td><td>Autonomous tier narrows going forward; history retained, not deleted</td></tr>
+        <tr><td class="mono">U17 Obligation at risk</td><td>Scope, not a new state</td><td>ASK if this transaction is proximate cause; ESCALATE if it's a standing pattern</td></tr>
+      </table></div>
+    </section>
+
+    <section id="p6">
+      <h2><span class="num">Part 6</span>Abstain, as a first-class outcome</h2>
+      <p>Confirmed necessary (U1, U7, U13 all route here). Not one state — <strong>a reason code attached to either SILENT or a visible ABSTAINED state, gated by downside</strong>, reusing the same governor logic rather than inventing new machinery:</p>
+      <ul>
+        <li><strong>Silent-logged abstention</strong> (low D<sub>t</sub>) — outwardly identical to SILENT, but the record carries <code>reason: insufficient_evidence</code> instead of <code>reason: not_material</code>. A cluster of these on one category is a data-pipeline signal, cleanly distinguishable from "nothing interesting happened."</li>
+        <li><strong>ABSTAINED_WITH_REASON</strong> (mid/high D<sub>t</sub>) — Vantage states plainly it cannot answer, and why: <em>"I can't tell you what this does to your fund goal — your linked account hasn't synced in 6 days"</em> — rather than a number it can't stand behind.</li>
+      </ul>
+      <p>Stays open if the missing fact is plausibly refreshable before the window closes; closes permanently otherwise. <strong>Neither success nor failure</strong>: a successful safety behavior under H1/H9, but not an H6 accountability success, since no consequence was actually delivered. Tracked as its own KPI — abstention rate — not folded into either count. Repeated abstention from one source downgrades that source's future reliability weighting (Part 7) and, past a threshold, raises a capability-health flag distinct from any single transaction.</p>
+    </section>
+
+    <section id="p7">
+      <h2><span class="num">Part 7</span>Making confidence operational — no invented score</h2>
+      <p>No numeric "AI confidence." A deterministic rule table over five observable, per-fact factors:</p>
+      <div class="tablewrap"><table>
+        <tr><th>Factor</th><th>Values</th></tr>
+        <tr><td class="mono">source_verified</td><td>bool — linked/verified vs. self-reported</td></tr>
+        <tr><td class="mono">freshness_hours</td><td>time since refresh vs. a per-fact-type threshold</td></tr>
+        <tr><td class="mono">completeness</td><td>complete / partial / absent</td></tr>
+        <tr><td class="mono">cross_source_agreement</td><td>agree / disagree / single_source — reuses the existing reconciliation-delta pattern already in the codebase</td></tr>
+        <tr><td class="mono">rail_availability</td><td>available / degraded / unavailable — capability-dependent actions only</td></tr>
+      </table></div>
+      <p><strong>Precedence — an ordered, short-circuiting cascade, not a weighted blend</strong> (fixed after the engineer red-team in Part 14): (1) mandate check, always first and independent; (2) required-fact-absent; (3) staleness; (4) disagreement; (5) protected-boundary/magnitude. First match wins.</p>
+      <p><strong>Reversibility</strong>: whether the decision window is still open — reusing the Q2 finding that a pre-auth cancel is "reversible for the rail, irreversible for the moment." <strong>Downside</strong>: a composite of (a) protected-boundary proximity — high by definition, independent of amount — and (b) the consequence engine's own magnitude output, reusing <code>getGoalConsequence</code>/<code>getLiquidityBuffer</code> rather than a new metric.</p>
+      <p>The hypothesis labels (VERIFIED / STALE / CONFLICTING) are kept as <em>inputs</em>, not adopted as the governor's output states — the output is the four envelopes above, because that's what Machine A's guards actually need to read.</p>
+    </section>
+
+    <section id="p8">
+      <h2><span class="num">Part 8</span>The failure taxonomy, tested for completeness</h2>
+      <div class="tablewrap"><table>
+        <tr><th>Category</th><th>Cases</th><th>Recovery</th></tr>
+        <tr><td>Epistemic — "we don't know enough"</td><td>U1, U2, U3, U7</td><td>obtain / verify information</td></tr>
+        <tr><td>Capability — "a rail/tool can't do it"</td><td>U4, U13</td><td>degrade / fallback / retry</td></tr>
+        <tr><td>Authority — "not permitted"</td><td>U5, U6, U16</td><td>return control to the human</td></tr>
+      </table></div>
+      <p><strong>Not a failure at all</strong>, correctly outside the taxonomy: U8, U9, U10, U11, U17 — normal-path variants, memory-governance questions, or legitimate triggers.</p>
+      <div class="callout danger">
+        <strong>The taxonomy is incomplete.</strong> U15 fits none of the three: data can be perfect, the rail fully up, the action inside mandate — and Vantage still misses H6's "before commitment" promise, because the <em>window</em>, not evidence or permission, is what failed. A fourth category: <strong>accountability-window (timing) failure</strong> — "we knew, we could, we were allowed, but too late." Recovery is neither obtain-information, degrade, nor escalate — it's honest relabeling: still useful, never counted as a pre-commitment success (Invariant 8).
+      </div>
+    </section>
+
+    <section id="p9">
+      <h2><span class="num">Part 9</span>Resumability — no restart from scratch</h2>
+      <div class="tablewrap"><table>
+        <tr><th>Recoverable condition</th><th>Resume point</th><th>Preserved</th></tr>
+        <tr><td>U2 stale, refresh succeeds</td><td class="mono">CONTEXT_ASSEMBLED</td><td>event id, facts, the non-stale parts of context</td></tr>
+        <tr><td>U4 rail down, retry succeeds</td><td>the specific pending capability check</td><td>whether consequence calc already succeeded independent of the rail</td></tr>
+        <tr><td>U3/U10 clarified</td><td class="mono">CONSEQUENCE_COMPUTED / RELEVANCE_ASSESSED</td><td>the new input plus everything already valid</td></tr>
+        <tr><td>U16 mandate expanded</td><td>only the pending blocked action</td><td>governor re-check only, not the full pipeline</td></tr>
+      </table></div>
+      <p>Every open/pending instance persists: event id (idempotency key), raw facts, which context calls already succeeded plus values and fetch timestamps, the exact blocking field, and the governor's last envelope with reason.</p>
+    </section>
+
+    <section id="p10">
+      <h2><span class="num">Part 10</span>Invariants</h2>
+      <p>The ten given, held as written, plus three found necessary during construction (11–13) and one from red-teaming (14).</p>
+      <ol>
+        <li>No authoritative financial consequence from known-invalid inputs.</li>
+        <li>The LLM never becomes the source of financial arithmetic.</li>
+        <li>No financial execution beyond the current authority ceiling.</li>
+        <li>User silence is never approval for a money-moving action.</li>
+        <li>Proceeding against Vantage's information never auto-modifies a standing preference.</li>
+        <li>Missing data never silently becomes zero.</li>
+        <li>Duplicate events never create duplicate financial effects.</li>
+        <li>A post-commitment consequence is never logged as a successful pre-decision intervention.</li>
+        <li>High confidence never overrides an authority boundary.</li>
+        <li>An explicit instruction overrides an inferred preference.</li>
+        <li><strong>A CLOSED record is immutable; corrections append, never edit history.</strong></li>
+        <li><strong>A field classified absent or unresolved-disagree is never treated as adequate merely because retries were attempted.</strong></li>
+        <li><strong>Every autonomous SILENT/INFORM decision persists the evidence snapshot that justified it</strong> — otherwise H4/H5 is unverifiable.</li>
+        <li><strong>The reasoning step is hard-gated to never exceed the governor's precomputed ceiling</strong> — found in the financial-risk red-team, Part 14.</li>
+      </ol>
+    </section>
+
+    <section id="p11">
+      <h2><span class="num">Part 11</span>Transition table</h2>
+      <div class="tablewrap"><table>
+        <tr><th>Current</th><th>Trigger</th><th>Guard</th><th>Action</th><th>Next</th><th>Human?</th></tr>
+        <tr><td>—</td><td>new event</td><td>not a duplicate</td><td>ingest</td><td class="mono">OBSERVED</td><td>No</td></tr>
+        <tr><td class="mono">OBSERVED</td><td>dedup check</td><td>duplicate key found</td><td>drop, ack source</td><td class="mono">CLOSED (no-op)</td><td>No</td></tr>
+        <tr><td class="mono">OBSERVED</td><td>context fetch</td><td>—</td><td>call budget/buffer/goals/memory tools</td><td class="mono">CONTEXT_ASSEMBLED</td><td>No</td></tr>
+        <tr><td class="mono">CONTEXT_ASSEMBLED</td><td>evidence check</td><td>required fact absent</td><td>—</td><td class="mono">ABSTAINED (U1)</td><td>Maybe</td></tr>
+        <tr><td class="mono">CONTEXT_ASSEMBLED</td><td>evidence check</td><td>fact stale beyond threshold</td><td>contract envelope</td><td class="mono">PENDING_EVIDENCE</td><td>No</td></tr>
+        <tr><td class="mono">CONTEXT_ASSEMBLED</td><td>evidence check</td><td>sources disagree</td><td>quarantine field</td><td class="mono">PENDING_EVIDENCE / ABSTAINED</td><td>Maybe</td></tr>
+        <tr><td class="mono">CONTEXT_ASSEMBLED</td><td>evidence sound</td><td>—</td><td>run consequence engine</td><td class="mono">CONSEQUENCE_COMPUTED</td><td>No</td></tr>
+        <tr><td class="mono">CONSEQUENCE_COMPUTED</td><td>governor</td><td>FULL_ENVELOPE, not material</td><td>classify</td><td class="mono">SILENT</td><td>No</td></tr>
+        <tr><td class="mono">CONSEQUENCE_COMPUTED</td><td>governor</td><td>FULL_ENVELOPE, material-non-critical</td><td>generate consequence text</td><td class="mono">INFORMED</td><td>No</td></tr>
+        <tr><td class="mono">CONSEQUENCE_COMPUTED</td><td>governor</td><td>protected-floor / obligation guardrail (U6)</td><td>present consequence</td><td class="mono">AWAITING_HUMAN_DECISION</td><td>Yes</td></tr>
+        <tr><td class="mono">CONSEQUENCE_COMPUTED</td><td>governor</td><td>MANDATE_EXCEEDED (U5)</td><td>present with reason</td><td class="mono">AWAITING_HUMAN_DECISION</td><td>Yes</td></tr>
+        <tr><td class="mono">CONSEQUENCE_COMPUTED</td><td>governor</td><td>ABSTAIN_REQUIRED, high D<sub>t</sub></td><td>disclose limitation</td><td class="mono">ABSTAINED</td><td>No</td></tr>
+        <tr><td class="mono">CONSEQUENCE_COMPUTED</td><td>governor</td><td>ABSTAIN_REQUIRED, low D<sub>t</sub> (U7)</td><td>log only</td><td class="mono">SILENT (uncertain)</td><td>No</td></tr>
+        <tr><td class="mono">CONSEQUENCE_COMPUTED</td><td>standing risk (U17)</td><td>pattern across cycles</td><td>elevate visibility</td><td class="mono">ESCALATED</td><td>Eventually</td></tr>
+        <tr><td class="mono">AWAITING_HUMAN_DECISION</td><td>user responds</td><td>continue / reconsider</td><td>close</td><td class="mono">CLOSED</td><td>Yes</td></tr>
+        <tr><td class="mono">PENDING_EVIDENCE</td><td>refresh/answer</td><td>resolves the block</td><td>resume checkpoint</td><td class="mono">CONTEXT_ASSEMBLED / CONSEQUENCE_COMPUTED</td><td>Maybe</td></tr>
+        <tr><td class="mono">ABSTAINED (open)</td><td>new evidence in time</td><td>fact now available</td><td>resume</td><td class="mono">CONTEXT_ASSEMBLED</td><td>No</td></tr>
+        <tr><td>any open state</td><td>window closes unmet</td><td>commitment already happened</td><td>re-tag</td><td class="mono">POST_HOC → CLOSED</td><td>No</td></tr>
+        <tr><td class="mono">CLOSED</td><td>correction discovered (U12)</td><td>—</td><td>write linked correction</td><td class="mono">CORRECTED</td><td>Maybe</td></tr>
+        <tr><td>any state</td><td>mandate revoked (U16)</td><td>—</td><td>narrow ceiling</td><td>recomputed next event</td><td>No</td></tr>
+        <tr><td>any open state</td><td>goal changes (U11)</td><td>—</td><td>invalidate cache</td><td class="mono">CONSEQUENCE_COMPUTED</td><td>No</td></tr>
+      </table></div>
+    </section>
+
+    <section id="p12">
+      <h2><span class="num">Part 12</span>Diagrams</h2>
+      <h3>Judge-facing — readable in ~30 seconds</h3>
+      <pre class="mermaid">
+stateDiagram-v2
+    [*] --> Observed: financial event
+    Observed --> Understanding: gather context + compute consequence
+    Understanding --> Silent: not material — evidence sound
+    Understanding --> Inform: meaningful, not urgent
+    Understanding --> Abstain: not enough trustworthy evidence
+    Understanding --> HumanDecision: protected goal/boundary at risk
+    Silent --> [*]: CLOSED — successful non-event
+    Inform --> [*]: CLOSED — informed, no friction
+    Abstain --> [*]: CLOSED — safety, not a verdict
+    HumanDecision --> Proceeded: user continues
+    HumanDecision --> Reconsidered: user reconsiders
+    Proceeded --> [*]: CLOSED — success if disclosure was accurate
+    Reconsidered --> [*]: CLOSED
+      </pre>
+      <p class="diagram-caption">Observe → understand → one of four honest endings. Silence, information, and abstention are drawn as equally valid closures; only a protected boundary returns control to a person — and even then, proceeding anyway still closes the loop.</p>
+
+      <h3>Detailed engineering diagram</h3>
+      <pre class="mermaid">
+stateDiagram-v2
+    [*] --> OBSERVED
+    OBSERVED --> OBSERVED: duplicate id (idempotent no-op)
+    OBSERVED --> CONTEXT_ASSEMBLED
+
+    CONTEXT_ASSEMBLED --> PENDING_EVIDENCE: stale/conflicting, resolvable
+    CONTEXT_ASSEMBLED --> ABSTAINED: required fact absent
+    CONTEXT_ASSEMBLED --> CONSEQUENCE_COMPUTED: evidence usable
+
+    PENDING_EVIDENCE --> CONTEXT_ASSEMBLED: refresh/answer resolves it
+    PENDING_EVIDENCE --> ABSTAINED: window closes unresolved
+
+    CONSEQUENCE_COMPUTED --> RELEVANCE_ASSESSED
+
+    state RELEVANCE_ASSESSED {
+        [*] --> GovernorCheck
+        GovernorCheck --> FullEnvelope: mandate ok, evidence sound
+        GovernorCheck --> Contracted: evidence degraded
+        GovernorCheck --> MandateExceeded: action outside P
+        GovernorCheck --> AbstainRequired: evidence insufficient
+    }
+
+    RELEVANCE_ASSESSED --> SILENT: FullEnvelope, not material
+    RELEVANCE_ASSESSED --> SILENT: AbstainRequired + low downside
+    RELEVANCE_ASSESSED --> INFORMED: Full/Contracted, material-non-critical
+    RELEVANCE_ASSESSED --> ABSTAINED: AbstainRequired + high downside
+    RELEVANCE_ASSESSED --> AWAITING_HUMAN_DECISION: protected boundary hit
+    RELEVANCE_ASSESSED --> AWAITING_HUMAN_DECISION: MandateExceeded
+    RELEVANCE_ASSESSED --> ESCALATED: standing risk pattern
+
+    AWAITING_HUMAN_DECISION --> CLOSED: user continues
+    AWAITING_HUMAN_DECISION --> CLOSED: user reconsiders
+
+    SILENT --> CLOSED
+    INFORMED --> CLOSED
+    ABSTAINED --> CLOSED: window closes
+    ABSTAINED --> CONTEXT_ASSEMBLED: new evidence in time
+    ESCALATED --> CLOSED
+
+    CLOSED --> POST_HOC: arrived after commitment
+    CLOSED --> CORRECTED: prior record later found wrong
+
+    POST_HOC --> [*]
+    CORRECTED --> [*]
+      </pre>
+    </section>
+
+    <section id="p13">
+      <h2><span class="num">Part 13</span>Six scenario traces</h2>
+      <div class="tablewrap"><table>
+        <tr><th>#</th><th>Scenario</th><th>Trace</th></tr>
+        <tr><td>1</td><td>₹900 coffee, comfortably ahead, verified data</td><td class="mono">OBSERVED → CONTEXT_ASSEMBLED(Full) → CONSEQUENCE_COMPUTED(Δ≈0) → SILENT → CLOSED</td></tr>
+        <tr><td>2</td><td>₹18,000 discretionary, verified data, within mandate</td><td class="mono">…→ RELEVANCE_ASSESSED → INFORMED (material tier) <em>or</em> AWAITING_HUMAN_DECISION (crosses user's "major" line) → CLOSED</td></tr>
+        <tr><td>3</td><td>Same ₹18,000, stale account data</td><td class="mono">…→ CONTRACTED_ENVELOPE → PENDING_EVIDENCE → refresh succeeds → Scenario 2; or fails → qualified INFORMED / AWAITING_HUMAN_DECISION (insufficient current data)</td></tr>
+        <tr><td>4</td><td>₹3,000, materially conflicting sources</td><td class="mono">…→ quarantine field → ABSTAIN_REQUIRED, low D<sub>t</sub> → SILENT (insufficient_evidence) → CLOSED</td></tr>
+        <tr><td>5</td><td>Large txn, high confidence, would require moving money</td><td class="mono">…→ mandate check (independent of C<sub>t</sub>) → AWAITING_HUMAN_DECISION (authority, not evidence) → CLOSED</td></tr>
+        <tr><td>6</td><td>Informed of a goal delay; user knowingly proceeds</td><td class="mono">…→ AWAITING_HUMAN_DECISION → continue → CLOSED (SUCCESS)</td></tr>
+      </table></div>
+      <p><strong>On "identical states = too generic":</strong> Scenarios 1 and 4 both end <code>SILENT → CLOSED</code> — deliberately; the external behavior is correctly identical because bothering the user isn't warranted either way. What must differ, and does, is the internal reason code (<code>not_material</code> vs. <code>insufficient_evidence</code>). Scenarios 2 and 3 show what a model that fails this test would look like: the same transaction taking the same outward path regardless of data quality. This one doesn't.</p>
+    </section>
+
+    <section id="p14">
+      <h2><span class="num">Part 14</span>Red-team</h2>
+      <div class="findings-grid">
+        <div class="finding"><span class="num">Engineer</span> — "Precedence is under-specified when multiple conditions fire at once." <strong>Fixed:</strong> an ordered, short-circuiting cascade, not a weighted blend (now explicit in Part 7).</div>
+        <div class="finding"><span class="num">Product manager</span> — "Isn't this three if-statements with ceremony?" The common case genuinely does collapse to a fast early-exit through FULL_ENVELOPE. The machinery is spent only on the ~5–10% of events where a flat rule would silently produce a wrong or defaulted answer. <strong>Not modified.</strong></div>
+        <div class="finding"><span class="num">Financial-risk reviewer</span> — "Can the LLM grant itself authority it doesn't have?" The sharpest hit: nothing stopped the reasoning step from exceeding the governor's own ceiling. <strong>Fixed, now Invariant 14:</strong> the governor runs as deterministic code before reasoning is invoked; the LLM selects only among permitted options, never requests more.</div>
+        <div class="finding"><span class="num">User</span> — "Will this constantly interrupt me?" Fair, and not fully answerable by a state machine — thresholds need real usage data. Structurally biased toward silence in the low-stakes/low-confidence case (U7), which is the common real case. <strong>Not modified</strong> — a Build-round calibration problem, not a design flaw.</div>
+        <div class="finding"><span class="num">Competition judge</span> — "Agent, or budgeting workflow with agent vocabulary?" Honest answer: the governor is deterministic by design (H1 requires this). Genuine reasoning is confined to <code>RELEVANCE_ASSESSED</code>, only once the governor has already granted an envelope — weighing goals, applying a stated preference to a novel case — never over whether the boundary itself should move. That narrow scoping is the honest answer, not a dodge.</div>
+      </div>
+    </section>
+
+    <section id="p15">
+      <h2><span class="num">Part 15</span>Originality test</h2>
+      <p>Honest answer: <strong>the basic skeleton — observe, assemble, compute, decide, act/inform/ask — is not itself unusual.</strong> Three competent teams likely converge on that shape. What would not survive independent reproduction, and is what the final answer leans on:</p>
+      <ol>
+        <li>The governor as a ceiling, not an instruction — four explicit envelopes, permission checked first and independently of evidence.</li>
+        <li>Silent-logged vs. visible abstention, gated specifically by downside.</li>
+        <li>The discovered fourth failure category — found only by stress-testing the given taxonomy rather than accepting it as complete.</li>
+        <li>The hard gate: reasoning can only select among governor-permitted options, never exceed the ceiling.</li>
+        <li>SILENT's own audit trail, making "fewer unnecessary interventions" falsifiable rather than a slogan.</li>
+      </ol>
+    </section>
+
+    <section id="p16">
+      <h2><span class="num">Part 16</span>Final competition response</h2>
+      <blockquote>
+        <p>Vantage moves through one lifecycle per financial event it observes: assemble the relevant context, compute the deterministic consequence to the user's own stated goals, then decide how much attention the moment deserves. That decision has four honest endings, and only one of them looks like a notification.</p>
+        <p>If a transaction doesn't materially change the user's goal trajectory, Vantage closes the event silently — logged and auditable, treated as a successful outcome, not a missed chance to speak. If it's meaningful but not urgent, Vantage informs: a plain statement of what changed, a date shift rather than a verdict, with nothing to approve. If it touches a boundary the user set themselves — a minimum emergency buffer, a committed obligation — Vantage's autonomy contracts by rule, not by how confident it feels, and control returns to the person: continue or reconsider, with the consequence shown plainly first. A person who sees an accurate consequence and proceeds anyway is a success, not a failure — Vantage is accountable for the understanding, never for the choice.</p>
+        <p>Before any of that, Vantage checks what it actually knows. If a fact it needs is missing, stale, or its sources disagree, its usable autonomy shrinks automatically — permission is a ceiling on what Vantage is allowed to do, never an instruction to act regardless of evidence. For something small, this usually means Vantage quietly notes its own uncertainty and says nothing, rather than pestering the user over a trivial amount. For something consequential, it can instead say so out loud: that it doesn't have enough trustworthy information to tell the user what this decision does to their goal, rather than offering a number it can't stand behind. That is correct safety behavior, not a malfunction.</p>
+        <p>Nothing in this design moves money, cancels a payment, or changes a goal on its own. Even where a supported payment flow could technically hold a transaction pending confirmation, that step always requires the person's explicit go-ahead in the moment — high confidence in the data never substitutes for that authority. When evidence, permission, or timing are ambiguous, the system's default is to say less, not more, and to hand control back to the person rather than guess on their behalf.</p>
+      </blockquote>
+
+      <h3>Three design insights the state machine exposed</h3>
+      <ol>
+        <li>Silence needed its own audit trail to be a real claim, not a slogan — H4/H5 are only falsifiable once every SILENT close carries the evidence that justified it.</li>
+        <li>Permission and evidence are genuinely separate axes, not one confidence score — the same permitted action can be unusable because the data behind it is weak.</li>
+        <li>The given failure taxonomy was incomplete — the gap found (timing/accountability-window failure) is the one case where Vantage can be right about everything and still fail H6, purely because it arrived too late.</li>
+      </ol>
+
+      <h3>Three claims to avoid making</h3>
+      <div class="avoid"><span class="num">01</span> — Do not claim Vantage can autonomously hold, cancel, or capture a payment through any rail. Always human-gated, in every version of this design.</div>
+      <div class="avoid"><span class="num">02</span> — Do not claim the standing-mandate/intervention-preference mechanism is live. It is specified here, not built.</div>
+      <div class="avoid"><span class="num">03</span> — Do not claim or imply a numeric AI confidence score exists anywhere in this system. There isn't one, deliberately.</div>
+
+      <h3>Capability gap discovered while constructing the states</h3>
+      <p>The governor's precedence logic — mandate check strictly first and independent of evidence, and the LLM hard-gated to never exceed what the governor permits — has no analogue anywhere in the current codebase. <code>evaluateTransaction</code> in <code>alerts.ts</code> is flat threshold logic with no such gate, no idempotency check, no freshness tracking, and no correction protocol. A new build item, not a refinement of something partially built.</p>
+    </section>
+
+    <section id="ledger">
+      <h2><span class="num">Ledger</span>Updated Capability Gap Ledger</h2>
+      <div class="tablewrap"><table>
+        <tr><th>Component</th><th>Specified here</th><th>Actual in codebase</th><th>Gap</th></tr>
+        <tr><td>Financial Decision Lifecycle</td><td>Full 13-state lifecycle, resumable checkpoints</td><td><code>evaluateTransaction</code> runs once, synchronously, to completion or not at all</td><td>Entire state machine unbuilt</td></tr>
+        <tr><td>Autonomy Governor</td><td>P/C<sub>t</sub>/R<sub>t</sub>/D<sub>t</sub> → 4 envelopes, deterministic cascade</td><td>No evidence-quality tracking on any fact; no mandate table</td><td>Entire governor unbuilt</td></tr>
+        <tr><td>Idempotency</td><td>Dedup key at OBSERVED</td><td><code>/api/agent/transaction</code> has no dedup logic</td><td>New requirement</td></tr>
+        <tr><td>Abstention</td><td>First-class, silent vs. visible, downside-gated</td><td>Does not exist in any form</td><td>New requirement</td></tr>
+        <tr><td>Correction protocol</td><td>CLOSED immutable, append-linked corrections</td><td><code>state.alerts</code> has no versioning concept</td><td>New requirement</td></tr>
+        <tr><td>LLM authority ceiling</td><td>Reasoning hard-gated below the governor's ceiling</td><td>No such gate anywhere — also relevant to <code>claudeAgent.ts</code></td><td>New requirement</td></tr>
+      </table></div>
+    </section>
+
+    <section id="log">
+      <h2><span class="num">Log</span>Updated Decision Log</h2>
+      <div class="tablewrap"><table>
+        <tr><th>#</th><th>Decision</th><th>Source</th></tr>
+        <tr><td>20</td><td>Generic linear model rejected — no silence terminal, no evidence representation, collapses the deterministic/agentic boundary</td><td>This phase, Part 1</td></tr>
+        <tr><td>21</td><td>Two-machine design: Machine A gated by Machine B, B modeled as computed output, not a persisted machine</td><td>This phase, Part 3</td></tr>
+        <tr><td>22</td><td>Machine B output = four envelopes, not the raw evidence-quality labels originally hypothesized</td><td>This phase, Part 3/7</td></tr>
+        <tr><td>23</td><td>Evidence model built from five observable factors — no invented confidence score</td><td>This phase, Part 7</td></tr>
+        <tr><td>24</td><td>Three-way taxonomy found incomplete; fourth category (timing/accountability-window) added, evidenced by U15</td><td>This phase, Part 8</td></tr>
+        <tr><td>25</td><td>ABSTAIN modeled as a downside-gated reason code, not a generic error state</td><td>This phase, Part 6</td></tr>
+        <tr><td>26</td><td>Governor precedence fixed as an ordered cascade after engineering red-team</td><td>This phase, Part 14</td></tr>
+        <tr><td>27</td><td><strong>Recommended, pending ratification:</strong> LLM reasoning hard-gated to never exceed the governor's ceiling — proposed as Invariant 14, surfaced by the financial-risk red-team. Not yet a ratified H-decision — recommend confirming as <strong>H10</strong>.</td><td>This phase, Part 14</td></tr>
+      </table></div>
+    </section>
+
+    <footer>Not proceeding to Question 4. Full working document, including the complete transition table and every scenario trace, also saved to the repository at <code>docs/competition/question-3-agent-state-machine.md</code>.</footer>
+  </main>
+</div>
